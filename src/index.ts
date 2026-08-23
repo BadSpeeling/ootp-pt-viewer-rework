@@ -3,6 +3,9 @@ import * as settings from '../settings.json';
 
 import { LiveUpdate } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
+import { OotpCsvExportReader } from './backend/export-reader';
+import { OotpExportDataColumn } from './backend/types';
+import { ProjectJsonModelReader } from './backend/database-creator';
 
 declare global {
     
@@ -13,6 +16,7 @@ declare global {
     interface ElectronAPI {
         get: () => string,
         getLiveUpdates: () => Promise<LiveUpdate[]>,
+        importCards: () => Promise<number>,
     }
 
 }
@@ -71,6 +75,7 @@ app.on('activate', () => {
 // code. You can also put them in separate files and import them here.
 ipcMain.handle('get', get)
 ipcMain.handle('getLiveUpdates', getLiveUpdatesHandler);
+ipcMain.handle('importCards', importCardsHandler);
 
 function get () {
     return "Hello!";
@@ -78,4 +83,16 @@ function get () {
 
 async function getLiveUpdatesHandler (): Promise<LiveUpdate[]> {
   return getLiveUpdates(settings.databasePath);
+}
+
+async function importCardsHandler (): Promise<number> {
+
+    const ptCardListModelReader = new ProjectJsonModelReader<OotpExportDataColumn>("ptCardListColumns.json")
+    const ptCardListModel = await ptCardListModelReader.getJsonModels();
+
+    const csvReader = new OotpCsvExportReader(ptCardListModel, [...settings.ootpRoot, ...settings.ptCardFile]);
+    const csvExport = await csvReader.readExport();
+
+    return csvExport.recordCount();
+
 }

@@ -6,5 +6,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     
     get: () => ipcRenderer.invoke('get'),
     getLiveUpdates: () => ipcRenderer.invoke('getLiveUpdates'),
+    importCards: () => ipcRenderer.invoke('importCards'),
 
 });
