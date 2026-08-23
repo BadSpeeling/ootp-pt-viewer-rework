@@ -5,5 +5,6 @@ import { contextBridge, ipcRenderer } from 'electron/renderer'
 contextBridge.exposeInMainWorld('electronAPI', {
     
     get: () => ipcRenderer.invoke('get'),
+    getLiveUpdates: () => ipcRenderer.invoke('getLiveUpdates'),
 
 });

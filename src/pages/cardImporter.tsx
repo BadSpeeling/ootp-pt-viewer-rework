@@ -9,8 +9,7 @@ export function CardImporter () {
     React.useEffect(() => {
 
         (async () => {
-            //const liveUpdates = await window.electronAPI.getLiveUpdates();
-            const liveUpdates: LiveUpdate[] = [{EffectiveDate: "2026-01-01", LiveUpdateID: 1}, {EffectiveDate: "2026-06-01", LiveUpdateID: 2}] 
+            const liveUpdates = await window.electronAPI.getLiveUpdates();
             setLiveUpdates(liveUpdates);
         })()
 

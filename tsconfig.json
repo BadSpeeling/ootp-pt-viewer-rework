@@ -14,7 +14,8 @@
     "paths": {
       "*": ["node_modules/*"]
     },
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "lib": ["ES2021","DOM"]
   },
   "include": ["src/**/*"]
 }
