@@ -337,3 +337,7 @@ export interface LiveUpdate {
     LiveUpdateID: number | null,
     EffectiveDate: string,
 }
+
+export enum ImportCardResult {
+    SUCCESS,FAIL,LIVE_UPDATE_NEEDED
+}

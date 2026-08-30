@@ -1,0 +1,82 @@
+import { OotpDataExport } from './'
+
+export class PtCardListExportScriptGenerator {
+
+    private cardData: OotpDataExport;
+
+    constructor (cardData: OotpDataExport) {
+        this.cardData = cardData;
+    }
+
+    getImportScript() {
+        
+        const filter: ((stats: string[][]) => string[][]) | undefined = undefined;
+
+        const script = `
+${this.cardData.generateLoadExportedDataScript(filter, 'PtCards')}
+${this.getPtCardListWriteScript()}
+        `
+
+        return script;    
+    
+    }
+
+    private getPtCardListWriteScript () {
+
+        const sourceDatabaseColumnNames = [...this.cardData.sliceColumns('CardTitle', 'BuyOrderHigh'), ...this.cardData.sliceColumns('date')].map(h => `[${h.databaseColumnName}]`).join(',');
+
+        return `
+DROP TABLE IF EXISTS temp.CurrentLiveUpdate;
+CREATE TABLE temp.CurrentLiveUpdate AS 
+SELECT LiveUpdateID,DATETIME(EffectiveDate,'auto')
+FROM LiveUpdate
+ORDER BY EffectiveDate DESC
+LIMIT 1;
+
+DROP TABLE IF EXISTS temp.CardInserts;
+CREATE TABLE temp.CardInserts AS
+SELECT tc.*, lu.LiveUpdateID
+FROM temp.PtCards tc
+JOIN temp.CurrentLiveUpdate lu on 1=1
+LEFT JOIN PtCard c ON c.CardID = tc.CardID AND c.LiveUpdateID = lu.LiveUpdateID
+WHERE c.PtCardID IS NULL AND tc.CardType = 1;
+
+INSERT INTO temp.CardInserts 
+SELECT tc.*, 0 as LiveUpdateID
+FROM temp.PtCards tc 
+LEFT JOIN PtCard c on tc.CardID = c.CardID
+WHERE c.CardID IS NULL and tc.CardType != 1;
+
+INSERT INTO PtCard (${sourceDatabaseColumnNames}, LiveUpdateID)
+SELECT ${sourceDatabaseColumnNames}, LiveUpdateID
+FROM temp.CardInserts
+ORDER BY CardID ASC;
+        `
+    }
+
+    getCheckLiveUpdateScript () {
+
+        const liveUpdateCheckerValues = this.cardData.getSelectedValues(['CardID','CardValue','CardType']);
+        
+        const liveUpdateCardValuesScript = liveUpdateCheckerValues.map(liveUpdateCheckerValue => {
+            return `(${liveUpdateCheckerValue.join(',')})`
+        }).join(',\n')
+
+        return `
+WITH 
+cteLatestLiveUpdate AS (
+    SELECT LiveUpdateID FROM LiveUpdate ORDER BY EffectiveDate DESC LIMIT 1
+),
+cteCardOverall(CardID,CardValue,CardType) AS (
+    VALUES ${liveUpdateCardValuesScript}
+)
+SELECT CASE WHEN u.LiveUpdateID IS NULL THEN 0 WHEN t.CardValue != c.CardValue THEN 1 ELSE 0 END LiveUpdateOccured, t.CardID
+FROM cteCardOverall t
+LEFT JOIN PtCard c ON t.CardID = c.CardID
+LEFT JOIN cteLatestLiveUpdate u ON c.LiveUpdateID = u.LiveUpdateID   
+WHERE t.CardType = 1;
+        `        
+
+    }
+
+}

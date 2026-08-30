@@ -4,8 +4,10 @@ import * as settings from '../settings.json';
 import { LiveUpdate } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
-import { OotpExportDataColumn } from './backend/types';
+import { OotpExportDataColumn, ImportCardResult } from './backend/types';
 import { ProjectJsonModelReader } from './backend/database-creator';
+import { PtCardImporter } from './backend/PtCardImporter';
+import { Database } from './backend/database/Database';
 
 declare global {
     
@@ -85,14 +87,27 @@ async function getLiveUpdatesHandler (): Promise<LiveUpdate[]> {
   return getLiveUpdates(settings.databasePath);
 }
 
-async function importCardsHandler (): Promise<number> {
+async function importCardsHandler (): Promise<ImportCardResult> {
 
-    const ptCardListModelReader = new ProjectJsonModelReader<OotpExportDataColumn>("ptCardListColumns.json")
-    const ptCardListModel = await ptCardListModelReader.getJsonModels();
+	try {
+		const ptCardListModelReader = new ProjectJsonModelReader<OotpExportDataColumn>("ptCardListColumns.json")
+		const ptCardListModel = await ptCardListModelReader.getJsonModels();
 
-    const csvReader = new OotpCsvExportReader(ptCardListModel, [...settings.ootpRoot, ...settings.ptCardFile]);
-    const csvExport = await csvReader.readExport();
+		const csvReader = new OotpCsvExportReader(ptCardListModel, [...settings.ootpRoot, ...settings.ptCardFile]);
+		
+		const db = getDatabase();
+		const cardImporter = new PtCardImporter(db, csvReader);
+		const importResult = await cardImporter.importPtCardsAsync();
 
-    return csvExport.recordCount();
+		return importResult;
 
+	}
+	catch (err) {
+		return ImportCardResult.FAIL;
+	}
+
+}
+
+const getDatabase = () => {
+    return new Database(settings.databasePath);
 }
