@@ -18,7 +18,7 @@ declare global {
     interface ElectronAPI {
         get: () => string,
         getLiveUpdates: () => Promise<LiveUpdate[]>,
-        importCards: () => Promise<number>,
+        importCards: () => Promise<ImportCardResult>,
     }
 
 }
