@@ -37,21 +37,31 @@ export function CardImporter () {
         <div className="m-8">
             <div>{pageStatus}</div>
             { showImportCardsButton && <div><button onClick={importCardHandler}>Import Cards</button></div>}
-            { importResult === ImportCardResult.LIVE_UPDATE_NEEDED && <NewLiveUpdate liveUpdates={liveUpdates}/> }
+            { importResult === ImportCardResult.LIVE_UPDATE_NEEDED && <NewLiveUpdate liveUpdates={liveUpdates} setPageStatus={setPageStatus}/> }
         </div>
     )
 
 }
 
 type NewLiveUpdateProps = {
-    liveUpdates: LiveUpdate[]
+    liveUpdates: LiveUpdate[],
+    setPageStatus: React.Dispatch<React.SetStateAction<string>>,
 }
 
-function NewLiveUpdate ({liveUpdates}: NewLiveUpdateProps) {
+function NewLiveUpdate ({liveUpdates, setPageStatus}: NewLiveUpdateProps) {
 
-    const [newLiveUpdateDate, setNewLiveUpdateDate] = React.useState('');
+    const [newLiveUpdateDate, setNewLiveUpdateDate] = React.useState('');    
 
     const newLiveUpdateHandler = () => {
+
+        const dateRegex = /\d{4}-[012]\d-[012]\d/
+        
+        if (dateRegex.test(newLiveUpdateDate)) {
+            setPageStatus('');
+        }
+        else {
+            setPageStatus('Please enter a valid YYYY-MM-DD');
+        }
 
     }
 
@@ -65,7 +75,7 @@ function NewLiveUpdate ({liveUpdates}: NewLiveUpdateProps) {
             <div>{liveUpdatesRows}</div>
             <div>
                 <div>
-                    <span>Date of newest Live Update:</span><input type="text" value={newLiveUpdateDate} onChange={e => setNewLiveUpdateDate(e.target.value)}/>
+                    <div><span>Date of newest Live Update:</span><input type="text" value={newLiveUpdateDate} onChange={e => setNewLiveUpdateDate(e.target.value)}/></div>
                 </div>
             </div>
             <div>
