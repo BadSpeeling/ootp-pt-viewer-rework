@@ -3,6 +3,8 @@ import { LiveUpdate } from "../userInterfaceTypes";
 
 import * as React from "react";
 
+import { toast } from 'react-toastify';
+
 export function CardImporter () {
 
     const [liveUpdates, setLiveUpdates] = React.useState([] as LiveUpdate[]);
@@ -26,7 +28,7 @@ export function CardImporter () {
 
         }
         else if (importResult === ImportCardResult.FAIL) {
-            setPageStatus('There was an error attempting to import OOTP cards');
+            toast.error('There was an error attempting to import OOTP cards');
         }
 
     }
@@ -60,7 +62,7 @@ function NewLiveUpdate ({liveUpdates, setPageStatus}: NewLiveUpdateProps) {
             setPageStatus('');
         }
         else {
-            setPageStatus('Please enter a valid YYYY-MM-DD');
+            toast.error('Please enter a valid YYYY-MM-DD');
         }
 
     }

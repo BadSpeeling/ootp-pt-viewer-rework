@@ -4,12 +4,15 @@ import { createRoot } from 'react-dom/client';
 import { CurrentPage } from './userInterfaceTypes'
 import { Landing, CardImporter } from './pages'
 
+import { ToastContainer } from 'react-toastify';
+
 function App () {
 
     const [currentPage, setCurrentPage] = React.useState(CurrentPage.LANDING)
 
     return (
         <div>
+            <ToastContainer />
             {currentPage === CurrentPage.LANDING && <div><Landing setCurrentPage={setCurrentPage} /></div>}
             {currentPage === CurrentPage.CARD_IMPORTER && <div><CardImporter /></div>}
         </div>
