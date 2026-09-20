@@ -65,7 +65,7 @@ ORDER BY CardID ASC;
         return `
 WITH 
 cteLatestLiveUpdate AS (
-    SELECT LiveUpdateID FROM LiveUpdate ORDER BY EffectiveDate DESC LIMIT 1
+    SELECT LiveUpdateID FROM LiveUpdate ORDER BY UNIXEPOCH(EffectiveDate) DESC LIMIT 1
 ),
 cteCardOverall(CardID,CardValue,CardType) AS (
     VALUES ${liveUpdateCardValuesScript}

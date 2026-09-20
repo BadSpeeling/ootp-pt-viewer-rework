@@ -1,5 +1,4 @@
-import { ImportCardResult } from "../userInterfaceTypes";
-import { LiveUpdate } from "../userInterfaceTypes";
+import { ImportCardResult, LiveUpdate } from "../userInterfaceTypes";
 
 import * as React from "react";
 
@@ -9,7 +8,8 @@ export function CardImporter () {
 
     const [liveUpdates, setLiveUpdates] = React.useState([] as LiveUpdate[]);
     const [importResult, setImportResult] = React.useState(null as null | ImportCardResult);
-    const [pageStatus, setPageStatus] = React.useState('');
+    const [pageStatus, setPageStatus] = React.useState('Ready to import cards');
+    const [createdLiveUpdate, setCreatedLiveUpdate] = React.useState(null as null | LiveUpdate)
 
     const importCardHandler = async () => {
 
@@ -33,13 +33,13 @@ export function CardImporter () {
 
     }
 
-    const showImportCardsButton = importResult === null || importResult === ImportCardResult.FAIL
+    const showImportCardsButton = (importResult === null || importResult === ImportCardResult.FAIL) || (importResult === ImportCardResult.LIVE_UPDATE_NEEDED && createdLiveUpdate !== null);
 
     return (
         <div className="m-8">
             <div>{pageStatus}</div>
             { showImportCardsButton && <div><button onClick={importCardHandler}>Import Cards</button></div>}
-            { importResult === ImportCardResult.LIVE_UPDATE_NEEDED && <NewLiveUpdate liveUpdates={liveUpdates} setPageStatus={setPageStatus}/> }
+            { (importResult === ImportCardResult.LIVE_UPDATE_NEEDED && createdLiveUpdate === null) && <NewLiveUpdate liveUpdates={liveUpdates} setPageStatus={setPageStatus} setLiveUpdates={setLiveUpdates} setCreatedLiveUpdate={setCreatedLiveUpdate} /> }
         </div>
     )
 
@@ -47,10 +47,12 @@ export function CardImporter () {
 
 type NewLiveUpdateProps = {
     liveUpdates: LiveUpdate[],
+    setLiveUpdates: React.Dispatch<React.SetStateAction<LiveUpdate[]>>,
     setPageStatus: React.Dispatch<React.SetStateAction<string>>,
+    setCreatedLiveUpdate: React.Dispatch<React.SetStateAction<LiveUpdate | null>>,
 }
 
-function NewLiveUpdate ({liveUpdates, setPageStatus}: NewLiveUpdateProps) {
+function NewLiveUpdate ({liveUpdates, setPageStatus, setLiveUpdates, setCreatedLiveUpdate}: NewLiveUpdateProps) {
 
     const [newLiveUpdateEffectiveDate, setNewLiveUpdateDate] = React.useState('');    
 
@@ -60,10 +62,12 @@ function NewLiveUpdate ({liveUpdates, setPageStatus}: NewLiveUpdateProps) {
         
         if (dateRegex.test(newLiveUpdateEffectiveDate)) {
             
-            const createdliveUpdate = await window.electronAPI.createLiveUpdate(newLiveUpdateEffectiveDate);
+            const createdLiveUpdate = await window.electronAPI.createLiveUpdate(newLiveUpdateEffectiveDate);
 
-            if (createdliveUpdate) {
-                toast.info('Live update created!');
+            if (createdLiveUpdate) {
+                setPageStatus('Live update created! Ready to import cards');
+                setLiveUpdates([...liveUpdates, createdLiveUpdate]);
+                setCreatedLiveUpdate(createdLiveUpdate);
             }
             else {
                 toast.error('Failed creating the live update!');
