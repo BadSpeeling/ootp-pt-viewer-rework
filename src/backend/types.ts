@@ -334,10 +334,6 @@ export interface GeneralStatsWriteFilter {
 }
 
 export interface LiveUpdate {
-    LiveUpdateID: number | null,
+    LiveUpdateID: number,
     EffectiveDate: string,
-}
-
-export enum ImportCardResult {
-    SUCCESS,FAIL,LIVE_UPDATE_NEEDED
 }

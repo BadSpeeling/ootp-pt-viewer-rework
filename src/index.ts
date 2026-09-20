@@ -1,13 +1,14 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
-import { LiveUpdate } from './userInterfaceTypes';
+import { LiveUpdate, ImportCardResult } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
-import { OotpExportDataColumn, ImportCardResult } from './backend/types';
+import { OotpExportDataColumn, DatatableModel } from './backend/types';
 import { ProjectJsonModelReader } from './backend/database-creator';
 import { PtCardImporter } from './backend/PtCardImporter';
 import { Database } from './backend/database/Database';
+import { createLiveUpdateHandlerAsync } from './handlers';
 
 declare global {
     
@@ -19,6 +20,7 @@ declare global {
         get: () => string,
         getLiveUpdates: () => Promise<LiveUpdate[]>,
         importCards: () => Promise<ImportCardResult>,
+		    createLiveUpdate: (liveUpdateEffectiveDate: string) => Promise<LiveUpdate | null>,
     }
 
 }
@@ -78,6 +80,7 @@ app.on('activate', () => {
 ipcMain.handle('get', get)
 ipcMain.handle('getLiveUpdates', getLiveUpdatesHandler);
 ipcMain.handle('importCards', importCardsHandler);
+ipcMain.handle('createLiveUpdate', createLiveUpdate);
 
 function get () {
     return "Hello!";
@@ -104,6 +107,22 @@ async function importCardsHandler (): Promise<ImportCardResult> {
 	}
 	catch (err) {
 		return ImportCardResult.FAIL;
+	}
+
+}
+
+async function createLiveUpdate (e: IpcMainInvokeEvent, liveUpdateEffectiveDate: string): Promise<LiveUpdate | null> {
+
+	try {
+
+		const db = getDatabase();
+		const liveUpdate = await createLiveUpdateHandlerAsync(db, liveUpdateEffectiveDate);
+		return liveUpdate;
+
+	}
+	catch (err) {
+		//TODO: log error
+		return null;
 	}
 
 }

@@ -6,11 +6,11 @@ import { ProjectJsonModelReader } from '../src/backend/database-creator'
 import { DatatableModel, OotpExportDataColumn } from '../src/backend/types';
 
 import { PtCardImporter } from '../src/backend/PtCardImporter';
+import { ImportCardResult } from '../src/userInterfaceTypes';
 
 import { initializeDatabase } from './util'
 import { FakeOneCardLiveUpdateReader, FakeOnlyNonLiveUpdateReader } from './fakes/OotpExportReader';
 import { OotpCsvExportReader } from '../src/backend/export-reader';
-import { ImportCardResult } from '../src/backend/types';
 import { LiveUpdate, PtCard, TournamentType } from '../src/backend/database/databaseTypes';
 import { DataInserter } from '../src/backend/database/DataInserter';
 

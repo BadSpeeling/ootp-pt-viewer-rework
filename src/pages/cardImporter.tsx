@@ -1,4 +1,4 @@
-import { ImportCardResult } from "../backend/types";
+import { ImportCardResult } from "../userInterfaceTypes";
 import { LiveUpdate } from "../userInterfaceTypes";
 
 import * as React from "react";
@@ -52,14 +52,23 @@ type NewLiveUpdateProps = {
 
 function NewLiveUpdate ({liveUpdates, setPageStatus}: NewLiveUpdateProps) {
 
-    const [newLiveUpdateDate, setNewLiveUpdateDate] = React.useState('');    
+    const [newLiveUpdateEffectiveDate, setNewLiveUpdateDate] = React.useState('');    
 
-    const newLiveUpdateHandler = () => {
+    const newLiveUpdateHandler = async () => {
 
-        const dateRegex = /\d{4}-[012]\d-[012]\d/
+        const dateRegex = /\d{4}-((0\d)|(1[012]))-[012]\d/
         
-        if (dateRegex.test(newLiveUpdateDate)) {
-            setPageStatus('');
+        if (dateRegex.test(newLiveUpdateEffectiveDate)) {
+            
+            const createdliveUpdate = await window.electronAPI.createLiveUpdate(newLiveUpdateEffectiveDate);
+
+            if (createdliveUpdate) {
+                toast.info('Live update created!');
+            }
+            else {
+                toast.error('Failed creating the live update!');
+            }
+
         }
         else {
             toast.error('Please enter a valid YYYY-MM-DD');
@@ -77,7 +86,7 @@ function NewLiveUpdate ({liveUpdates, setPageStatus}: NewLiveUpdateProps) {
             <div>{liveUpdatesRows}</div>
             <div>
                 <div>
-                    <div><span>Date of newest Live Update:</span><input type="text" value={newLiveUpdateDate} onChange={e => setNewLiveUpdateDate(e.target.value)}/></div>
+                    <div><span>Date of newest Live Update:</span><input type="text" value={newLiveUpdateEffectiveDate} onChange={e => setNewLiveUpdateDate(e.target.value)}/></div>
                 </div>
             </div>
             <div>

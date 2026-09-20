@@ -1,4 +1,4 @@
-import { ImportCardResult } from "./types";
+import { ImportCardResult } from "../userInterfaceTypes";
 import { IOotpExportReader } from "./export-reader";
 import { OotpDataExport, PtCardListExportScriptGenerator } from "./export-stats";
 import { Database } from "./database/Database";
