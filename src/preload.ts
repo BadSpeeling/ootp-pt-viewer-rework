@@ -8,5 +8,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getLiveUpdates: () => ipcRenderer.invoke('getLiveUpdates'),
     importCards: () => ipcRenderer.invoke('importCards'),
     createLiveUpdate: (liveUpdateEffectiveDate: string) => ipcRenderer.invoke('createLiveUpdate', liveUpdateEffectiveDate),
+    getExportedPtDataFiles: () => ipcRenderer.invoke('getExportedPtDataFiles'),
 
 });
