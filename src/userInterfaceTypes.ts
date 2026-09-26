@@ -1,5 +1,3 @@
-import { PtDataExportState } from './backend/types'
-
 export enum CurrentPage {
     LANDING,CARD_IMPORTER,STATS_IMPORTER
 }
@@ -13,16 +11,20 @@ export interface LiveUpdate {
     EffectiveDate: string,
 }
 
-export interface PtDataStatsFile {
+export interface PtDataFolder {
+    ptFolderPath: string,
+}
+
+export interface PtDataFile extends PtDataFolder {
     fileName: string,
     filePath: string,
     description: string,
+    tournamentStartDate: string,
     isIncludedFlag: boolean,
-    dataSaveStatus: DataSaveStatus,
     onlyMyTeamFlag: boolean,
-    dataExportState: PtDataExportState,
+    dataSaveStatus: TournamentFolderImportStatus,
 }
 
-export enum DataSaveStatus {
+export enum TournamentFolderImportStatus {
     None, Pending, Successful, Failure,
 }
