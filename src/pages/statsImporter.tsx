@@ -40,6 +40,7 @@ export function StatsImporter () {
     return (
         <div>
             <PtDataFile ptDataFiles={ptDataFiles} setPtDataFiles={setPtDataFiles}/> 
+            <PtDataFolder ptDataFolders={ptDataFolders}/>
         </div>
     )
 
@@ -88,6 +89,7 @@ function PtDataFile ({ptDataFiles, setPtDataFiles}: PtDataFileProps) {
 
     const handleTournamentImport = async () => {
 
+        //set all pt folders marked to be included as pending
         setPtDataFiles(ptDataFiles.map(ptDataFile => {
             if (ptDataFile.isIncludedFlag) {
                 return {
@@ -99,7 +101,7 @@ function PtDataFile ({ptDataFiles, setPtDataFiles}: PtDataFileProps) {
                 return ptDataFile;
             }
         }));
-
+        
         const updateFinishedPtDataFileImport = (index: number, isSuccessFlag: boolean) => {
             
             setPtDataFiles((ptDataFiles) => {
@@ -113,6 +115,7 @@ function PtDataFile ({ptDataFiles, setPtDataFiles}: PtDataFileProps) {
 
         }
 
+        //send request for each pt folder to import data
         ptDataFiles.forEach((ptDataFile, ptDataFileIndex) => {
             
             if (ptDataFile.isIncludedFlag) {
@@ -149,7 +152,7 @@ function PtDataFile ({ptDataFiles, setPtDataFiles}: PtDataFileProps) {
 
     return (
         <div>
-            <div>Tournament Folders Ready for Import</div>
+            <div>Tournament Folders ready for import</div>
             <table>
                 <thead>
                     <tr className="table-header">
@@ -169,7 +172,40 @@ function PtDataFile ({ptDataFiles, setPtDataFiles}: PtDataFileProps) {
         </div>
     )
 
+}
+
+type PtDataFolderProps = {
+    ptDataFolders: PtDataFolder[],
 } 
+
+function PtDataFolder ({ptDataFolders}: PtDataFolderProps) {
+    
+    const tableBody = ptDataFolders.map((f, index) => {
+        return (
+            <tr className="table-header" key={index}>
+                <td className="p-2 text-center">{f.ptFolderPath}</td>
+                <td className="p-2 text-center"><button>Delete all files</button><button>Leave one file</button></td>
+            </tr>
+        )
+    })
+
+    return (
+        <div>
+            <div>Tournament Folders with multiple files</div>
+            <table>
+                <thead>
+                    <tr className="table-header">
+                        <th className="p-2 text-center">PT Folder</th>
+                        <th className="p-2 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tableBody}
+                </tbody>
+            </table>
+        </div>
+    )
+}
 
 function getTournamentFolderImportStatus (status: TournamentFolderImportStatus) {
 
