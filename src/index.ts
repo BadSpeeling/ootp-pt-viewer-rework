@@ -4,11 +4,12 @@ import * as settings from '../settings.json';
 import { LiveUpdate, ImportCardResult } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
-import { OotpExportDataColumn, DatatableModel } from './backend/types';
+import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState } from './backend/types';
 import { ProjectJsonModelReader } from './backend/database-creator';
 import { PtCardImporter } from './backend/PtCardImporter';
 import { Database } from './backend/database/Database';
 import { createLiveUpdateHandlerAsync } from './handlers';
+import { PtFolderSearcher } from './backend/PtFolderSearcher';
 
 declare global {
     
@@ -21,6 +22,7 @@ declare global {
         getLiveUpdates: () => Promise<LiveUpdate[]>,
         importCards: () => Promise<ImportCardResult>,
 		    createLiveUpdate: (liveUpdateEffectiveDate: string) => Promise<LiveUpdate | null>,
+        getExportedPtDataFiles: () => Promise<PtDataExportFile[]>
     }
 
 }
@@ -81,6 +83,7 @@ ipcMain.handle('get', get)
 ipcMain.handle('getLiveUpdates', getLiveUpdatesHandler);
 ipcMain.handle('importCards', importCardsHandler);
 ipcMain.handle('createLiveUpdate', createLiveUpdate);
+ipcMain.handle('getExportedPtDataFiles', getExportedPtDataFiles);
 
 function get () {
     return "Hello!";
@@ -124,6 +127,15 @@ async function createLiveUpdate (e: IpcMainInvokeEvent, liveUpdateEffectiveDate:
 		//TODO: log error
 		return null;
 	}
+
+}
+
+async function getExportedPtDataFiles () : Promise<PtDataExportFile[]> {
+
+ 	  const ptFolders = await PtFolderSearcher.getAllPtFolders(settings.ootpRoot);
+ 	  const htmlFiles = await PtFolderSearcher.locateHtmlFiles(ptFolders);
+
+	  return htmlFiles.filter(f => f.exportState !== PtDataExportState.ERROR);
 
 }
 

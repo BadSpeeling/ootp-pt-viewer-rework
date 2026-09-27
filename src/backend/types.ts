@@ -337,3 +337,14 @@ export interface LiveUpdate {
     LiveUpdateID: number,
     EffectiveDate: string,
 }
+
+export interface PtDataExportFile {
+    exportState:PtDataExportState,
+    ptFolder:string,
+    path:string,
+    fileName?:string,
+}
+
+export enum PtDataExportState {
+    READY_TO_READ,NO_OUTPUT_FILES,MULTIPLE_OUTPUT_FILES,ERROR
+}
