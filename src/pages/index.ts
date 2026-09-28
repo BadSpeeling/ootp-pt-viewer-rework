@@ -1,3 +1,3 @@
 export { Landing } from './landing'
-export { CardImporter } from './cardImporter';
-export { StatsImporter } from './statsImporter'
+export { CardImporter } from './card-importer/cardImporter';
+export { StatsImporter } from './stats-importer/statsImporter'
