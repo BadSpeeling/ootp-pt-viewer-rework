@@ -32,18 +32,18 @@ export class PtFolderSearcher {
     
     }
     
-    static locateHtmlFiles (ptFolders: string[]) : Promise<PtDataExportFile[]> {
+    static locateHtmlFiles (ptFolderPaths: string[]) : Promise<PtDataExportFile[]> {
     
-        return Promise.all<PtDataExportFile>(ptFolders.map((ptFolder,index) => {
+        return Promise.all<PtDataExportFile>(ptFolderPaths.map((ptFolderPath,index) => {
             return new Promise ((resolve,reject) => {
-                const htmlStatsFolder = path.join(ptFolder, 'news', 'html', 'temp')
+                const htmlStatsFolder = path.join(ptFolderPath, 'news', 'html', 'temp')
     
                 fs.readdir(htmlStatsFolder, (err, files) => {
                     
                     if (err) {
                         resolve({
                             exportState: PtDataExportState.ERROR,
-                            ptFolder,
+                            ptFolder: ptFolderPath,
                             path: htmlStatsFolder,                            
                         })                
                     }
@@ -51,7 +51,7 @@ export class PtFolderSearcher {
                         if (files.length === 1) {
                             resolve({
                                 exportState: PtDataExportState.READY_TO_READ,
-                                ptFolder,
+                                ptFolder: ptFolderPath,
                                 path: htmlStatsFolder,
                                 fileName: files[0],
                             })
@@ -59,14 +59,14 @@ export class PtFolderSearcher {
                         else if (files.length > 1) {
                             resolve({
                                 exportState: PtDataExportState.MULTIPLE_OUTPUT_FILES,
-                                ptFolder,
+                                ptFolder: ptFolderPath,
                                 path: htmlStatsFolder,
                             })
                         }
                         else {
                             resolve({
                                 exportState: PtDataExportState.NO_OUTPUT_FILES,
-                                ptFolder,
+                                ptFolder: ptFolderPath,
                                 path: htmlStatsFolder,
                             })
                         }
