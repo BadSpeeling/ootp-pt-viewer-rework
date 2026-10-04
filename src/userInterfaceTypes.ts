@@ -28,3 +28,8 @@ export interface PtDataFile extends PtDataFolder {
 export enum TournamentFolderImportStatus {
     None, Pending, Successful, Failure,
 }
+
+export interface TournamentType {
+    TournamentTypeID: number,
+    Name: string,
+}

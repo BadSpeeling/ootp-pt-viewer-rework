@@ -338,6 +338,14 @@ export interface LiveUpdate {
     EffectiveDate: string,
 }
 
+export interface StatsBatch {
+    StatsBatchID: number,
+    TournamentTypeID: number,
+    Description: string,
+    TournamentStartDate: string,
+    Timestamp: string,
+}
+
 export interface PtDataExportFile {
     exportState:PtDataExportState,
     ptFolder:string,
@@ -347,4 +355,11 @@ export interface PtDataExportFile {
 
 export enum PtDataExportState {
     READY_TO_READ,NO_OUTPUT_FILES,MULTIPLE_OUTPUT_FILES,ERROR
+}
+
+export interface ImportStatFileRequest {
+    statsFilePath: string[],
+    description: string,
+    tournamentTypeID: number,
+    tournamentStartDate: string,
 }

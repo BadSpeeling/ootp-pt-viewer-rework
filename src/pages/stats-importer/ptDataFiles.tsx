@@ -75,11 +75,16 @@ export function PtDataFiles ({ptDataFiles, setPtDataFiles}: PtDataFilesProps) {
             
             if (ptDataFile.isIncludedFlag) {
             
-                new Promise<boolean>((resolve,reject) => {
+                new Promise<boolean>(async (resolve,reject) => {
 
-                    setTimeout(() => {
-                        resolve(true)
-                    }, Math.ceil((Math.random()*5000) + 500));
+                    const successFlag = await window.electronAPI.importTournamentFile({
+                        description: ptDataFile.description,
+                        statsFilePath: [...ptDataFile.filePath.split('\\'), ptDataFile.fileName],
+                        tournamentStartDate: ptDataFile.tournamentStartDate,
+                        tournamentTypeID: 16,
+                    })
+
+                    resolve(successFlag)
 
                 })
                 .then(result => {

@@ -1,12 +1,11 @@
 import { LiveUpdate } from "../../types";
 import { Database } from "../Database";
+import { Repository } from "./Repository";
 
-export class LiveUpdateRepository {
-
-    database: Database;
+export class LiveUpdateRepository extends Repository {
 
     constructor (database: Database) {
-        this.database = database;
+        super(database);
     }
 
     public async createLiveUpdate (effectiveDate: string) : Promise<LiveUpdate> {

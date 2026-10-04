@@ -1,3 +1,4 @@
 export { IOotpExportReader } from './IOotpExportReader'
 export { OotpExportReader } from './OotpExportReader'
 export { OotpCsvExportReader } from './OotpCsvExportReader'
+export { OotpHtmlExportReader } from './OotpHtmlExportReader'
