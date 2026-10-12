@@ -31,5 +31,5 @@ export enum TournamentFolderImportStatus {
 
 export interface TournamentType {
     TournamentTypeID: number,
-    Name: string,
+    TournamentName: string,
 }

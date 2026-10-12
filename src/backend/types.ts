@@ -363,3 +363,14 @@ export interface ImportStatFileRequest {
     tournamentTypeID: number,
     tournamentStartDate: string,
 }
+
+export interface TournamentType {
+    TournamentTypeID: number,
+    Name: string,
+    CardRestriction: string,
+    MaxOverall: number,
+    IsQuick: boolean,
+    IsCap: boolean,
+    IsLive: boolean,
+    CapAmount: number,
+}
