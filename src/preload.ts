@@ -10,6 +10,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
     importCards: () => ipcRenderer.invoke('importCards'),
     createLiveUpdate: (liveUpdateEffectiveDate: string) => ipcRenderer.invoke('createLiveUpdate', liveUpdateEffectiveDate),
     getExportedPtDataFiles: () => ipcRenderer.invoke('getExportedPtDataFiles'),
-    importTournamentFile: (request: ImportStatFileRequest) => ipcRenderer.invoke('importTournamentFile', request)
-    
+    importTournamentFile: (request: ImportStatFileRequest) => ipcRenderer.invoke('importTournamentFile', request),
+    getTournamentTypes: () => ipcRenderer.invoke('getTournamentTypes'),
+
 });

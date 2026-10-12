@@ -1,5 +1,6 @@
 import * as React from "react";
-import { PtDataFile, TournamentFolderImportStatus } from '../../userInterfaceTypes'
+import { PtDataFile, TournamentFolderImportStatus, TournamentType } from '../../userInterfaceTypes'
+import { TournamentTypePicker } from "../tournamentTypePicker";
 
 type PtDataFilesProps = {
     ptDataFiles: PtDataFile[],
@@ -7,6 +8,22 @@ type PtDataFilesProps = {
 } 
 
 export function PtDataFiles ({ptDataFiles, setPtDataFiles}: PtDataFilesProps) {
+
+    const [tournamentTypes, setTournamentTypes] = React.useState([] as TournamentType[]);
+    const [selectedTournamentType, setSelectedTournamentType] = React.useState(null as null|TournamentType);
+
+    React.useEffect(() => {
+        
+        const getTournamentTypes = async () => {
+
+            const tournamentTypes = await window.electronAPI.getTournamentTypes();
+            setTournamentTypes(tournamentTypes);
+
+        }
+
+        getTournamentTypes();
+
+    }, []);
 
     const updateTournamentExport = (tourney: PtDataFile,index: number) => {
         setPtDataFiles(ptDataFiles.map((t, i) => {
@@ -113,6 +130,7 @@ export function PtDataFiles ({ptDataFiles, setPtDataFiles}: PtDataFilesProps) {
     return (
         <div>
             <div>Tournament Folders ready for import</div>
+            <TournamentTypePicker tournaments={tournamentTypes} selectedTournamentType={selectedTournamentType} setSelectedTournamentType={setSelectedTournamentType}/>
             <table>
                 <thead>
                     <tr className="table-header">

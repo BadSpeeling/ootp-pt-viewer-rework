@@ -1,14 +1,14 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
-import { LiveUpdate, ImportCardResult } from './userInterfaceTypes';
+import { LiveUpdate, ImportCardResult, TournamentType } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
 import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState, ImportStatFileRequest } from './backend/types';
 import { ProjectJsonModelReader } from './backend/database-creator';
 import { PtCardImporter } from './backend/PtCardImporter';
 import { Database } from './backend/database/Database';
-import { createLiveUpdateHandlerAsync } from './handlers';
+import { createLiveUpdateHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
 
@@ -24,7 +24,8 @@ declare global {
         importCards: () => Promise<ImportCardResult>,
 		    createLiveUpdate: (liveUpdateEffectiveDate: string) => Promise<LiveUpdate | null>,
         getExportedPtDataFiles: () => Promise<PtDataExportFile[]>,
-        importTournamentFile: (request: ImportStatFileRequest) => Promise<boolean>
+        importTournamentFile: (request: ImportStatFileRequest) => Promise<boolean>,
+        getTournamentTypes: () => Promise<TournamentType[]>,
     }
 
 }
@@ -87,6 +88,7 @@ ipcMain.handle('importCards', importCardsHandler);
 ipcMain.handle('createLiveUpdate', createLiveUpdate);
 ipcMain.handle('getExportedPtDataFiles', getExportedPtDataFiles);
 ipcMain.handle('importTournamentFile', importTournamentFile);
+ipcMain.handle('getTournamentTypes', getTournamentTypes);
 
 function get () {
     return "Hello!";
@@ -160,6 +162,21 @@ async function importTournamentFile (e: IpcMainInvokeEvent, request: ImportStatF
     }
 
     return true;
+
+}
+
+async function getTournamentTypes (): Promise<TournamentType[]> {
+
+    const db = getDatabase();
+
+    try {
+        const tournamentTypes = await getTournamentTypesHandlerAsync(db);
+        return tournamentTypes
+    }
+    catch (err) {
+      //TODO: log
+      return [];      
+    }
 
 }
 
