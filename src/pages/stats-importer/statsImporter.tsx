@@ -9,40 +9,39 @@ export function StatsImporter () {
     const [ptDataFolders,setPtDataFolders] = React.useState([] as PtDataFolder[]);
     const [ptDataFiles,setPtDataFiles] = React.useState([] as PtDataFile[]);
 
+    const getPtDataFiles = async () => {
+        const currentPtDataFiles = await window.electronAPI.getExportedPtDataFiles();
+        
+        setPtDataFiles(currentPtDataFiles.filter(f => f.exportState === PtDataExportState.READY_TO_READ).map(f => {
+            return {
+                fileName: f.fileName ?? "No file name",
+                filePath: f.path,
+                ptFolderPath: f.ptFolder,
+                tournamentStartDate: "",
+                description: "",
+                isIncludedFlag: false,
+                onlyMyTeamFlag: false,  
+                dataSaveStatus: TournamentFolderImportStatus.None,                       
+            }
+        }));
+
+        setPtDataFolders(currentPtDataFiles.filter(f => f.exportState === PtDataExportState.MULTIPLE_OUTPUT_FILES).map(f => {
+            return {
+                ptFolderPath: f.ptFolder,                    
+            }
+        }));
+        
+    }
+
     React.useEffect(() => {
-
-        const getPtDataFiles = async () => {
-            const currentPtDataFiles = await window.electronAPI.getExportedPtDataFiles();
-            
-            setPtDataFiles(currentPtDataFiles.filter(f => f.exportState === PtDataExportState.READY_TO_READ).map(f => {
-                return {
-                    fileName: f.fileName ?? "No file name",
-                    filePath: f.path,
-                    ptFolderPath: f.ptFolder,
-                    tournamentStartDate: "",
-                    description: "",
-                    isIncludedFlag: false,
-                    onlyMyTeamFlag: false,  
-                    dataSaveStatus: TournamentFolderImportStatus.None,                       
-                }
-            }));
-
-            setPtDataFolders(currentPtDataFiles.filter(f => f.exportState === PtDataExportState.MULTIPLE_OUTPUT_FILES).map(f => {
-                return {
-                    ptFolderPath: f.ptFolder,                    
-                }
-            }));
-            
-        }
-
         getPtDataFiles();
-
     }, []);
 
     return (
         <div>
-            <PtDataFiles ptDataFiles={ptDataFiles} setPtDataFiles={setPtDataFiles}/> 
-            <PtDataFolders ptDataFolders={ptDataFolders}/>
+            {ptDataFiles.length !== 0 && <PtDataFiles ptDataFiles={ptDataFiles} setPtDataFiles={setPtDataFiles}/> }
+            {ptDataFolders.length !== 0 && <PtDataFolders ptDataFolders={ptDataFolders}/>}
+            <button onClick={getPtDataFiles}>Reload PT folders</button>
         </div>
     )
 
