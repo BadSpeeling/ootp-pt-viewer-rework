@@ -5,21 +5,23 @@ import { PtDataExportState, PtDataExportFile } from './types';
 
 export class PtFolderSearcher {
 
-    static getAllPtFolders (ootpRoot: string[]) : Promise<string[]> {
-    
-        const root = path.join(...ootpRoot);
+    static getAllPtFolders (ootpRoot: string[]) : Promise<string[][]> {
+
+        const savedGamesPath = [...ootpRoot, 'saved_games'];
+        const savedGames = path.join(...ootpRoot, 'saved_games');
 
         return new Promise ((resolve,reject) => {
     
-            const savedGames = path.join(root, 'saved_games')
+            const ptFolders: string[][] = [];
     
-            const ptFolders: string[] = []
-    
-            fs.readdir(savedGames, (err, files) => {
-                files.forEach((file) => {
+            fs.readdir(savedGames, (err, curPtFolders) => {
+                curPtFolders.forEach((curPtFolder) => {
                     
-                    if (file.includes(".pt")) {
-                        ptFolders.push(path.join(savedGames,file))
+                    if (curPtFolder.includes(".pt")) {
+
+                        const ptFolderPath = [...savedGamesPath, curPtFolder];
+                        ptFolders.push(ptFolderPath);
+
                     }                
                     
                 })
@@ -32,42 +34,44 @@ export class PtFolderSearcher {
     
     }
     
-    static locateHtmlFiles (ptFolderPaths: string[]) : Promise<PtDataExportFile[]> {
+    static locateHtmlFiles (ptFolderPaths: string[][]) : Promise<PtDataExportFile[]> {
     
         return Promise.all<PtDataExportFile>(ptFolderPaths.map((ptFolderPath,index) => {
             return new Promise ((resolve,reject) => {
-                const htmlStatsFolder = path.join(ptFolderPath, 'news', 'html', 'temp')
+
+                const htmlStatsFolderPath = [...ptFolderPath, 'news', 'html', 'temp'];
+                const htmlStatsFolder = path.join(...htmlStatsFolderPath);
     
                 fs.readdir(htmlStatsFolder, (err, files) => {
                     
                     if (err) {
                         resolve({
                             exportState: PtDataExportState.ERROR,
-                            ptFolder: ptFolderPath,
-                            path: htmlStatsFolder,                            
+                            ptFolderPath: ptFolderPath,
+                            filePath: htmlStatsFolderPath,                            
                         })                
                     }
                     else {
                         if (files.length === 1) {
                             resolve({
                                 exportState: PtDataExportState.READY_TO_READ,
-                                ptFolder: ptFolderPath,
-                                path: htmlStatsFolder,
+                                ptFolderPath: ptFolderPath,
+                                filePath: htmlStatsFolderPath,
                                 fileName: files[0],
                             })
                         }
                         else if (files.length > 1) {
                             resolve({
                                 exportState: PtDataExportState.MULTIPLE_OUTPUT_FILES,
-                                ptFolder: ptFolderPath,
-                                path: htmlStatsFolder,
+                                ptFolderPath: ptFolderPath,
+                                filePath: htmlStatsFolderPath,
                             })
                         }
                         else {
                             resolve({
                                 exportState: PtDataExportState.NO_OUTPUT_FILES,
-                                ptFolder: ptFolderPath,
-                                path: htmlStatsFolder,
+                                ptFolderPath: ptFolderPath,
+                                filePath: htmlStatsFolderPath,
                             })
                         }
                     }

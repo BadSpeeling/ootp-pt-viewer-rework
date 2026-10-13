@@ -96,7 +96,7 @@ export function PtDataFiles ({ptDataFiles, setPtDataFiles}: PtDataFilesProps) {
 
                     const successFlag = await window.electronAPI.importTournamentFile({
                         description: ptDataFile.description,
-                        statsFilePath: [...ptDataFile.filePath.split('\\'), ptDataFile.fileName],
+                        statsFilePath: [...ptDataFile.filePath, ptDataFile.fileName],
                         tournamentStartDate: ptDataFile.tournamentStartDate,
                         tournamentTypeID: 16,
                     })

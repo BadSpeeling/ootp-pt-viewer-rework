@@ -348,8 +348,8 @@ export interface StatsBatch {
 
 export interface PtDataExportFile {
     exportState:PtDataExportState,
-    ptFolder:string,
-    path:string,
+    ptFolderPath:string[],
+    filePath:string[],
     fileName?:string,
 }
 

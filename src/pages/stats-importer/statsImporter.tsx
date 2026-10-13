@@ -15,8 +15,8 @@ export function StatsImporter () {
         setPtDataFiles(currentPtDataFiles.filter(f => f.exportState === PtDataExportState.READY_TO_READ).map(f => {
             return {
                 fileName: f.fileName ?? "No file name",
-                filePath: f.path,
-                ptFolderPath: f.ptFolder,
+                filePath: f.filePath,
+                ptFolderPath: f.ptFolderPath,
                 tournamentStartDate: "",
                 description: "",
                 isIncludedFlag: false,
@@ -27,7 +27,7 @@ export function StatsImporter () {
 
         setPtDataFolders(currentPtDataFiles.filter(f => f.exportState === PtDataExportState.MULTIPLE_OUTPUT_FILES).map(f => {
             return {
-                ptFolderPath: f.ptFolder,                    
+                ptFolderPath: f.ptFolderPath,                    
             }
         }));
         

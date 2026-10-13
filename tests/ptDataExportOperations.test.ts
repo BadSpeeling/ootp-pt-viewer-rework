@@ -5,30 +5,30 @@ import * as path from 'node:path';
 import { PtFolderSearcher } from '../src/backend/PtFolderSearcher'
 import { PtDataExportState } from '../src/backend/types';
 
-const testPtFolderRoot = 'E:\\ootp_data\\pt_folder_test\\';
-const simpleFolderTest = testPtFolderRoot + 'simple_test\\';
-const simpleFileTest = testPtFolderRoot + 'simple_file_test\\';
-const doubleFileTest = testPtFolderRoot + 'double_file_test\\';
-const manyFolderTest = testPtFolderRoot + 'many_folder_test\\';
+const testPtFolderRoot = ['E:','ootp_data','pt_folder_test'];
+const simpleFolderTest = [...testPtFolderRoot, 'simple_test'];
+const simpleFileTest = [...testPtFolderRoot, 'simple_file_test'];
+const doubleFileTest = [...testPtFolderRoot, 'double_file_test'];
+const manyFolderTest = [...testPtFolderRoot, 'many_folder_test'];
 let fileNameCounter = 1;
 
 beforeAll(() => {
 
     //if the testing folder doesn't exist, create it
-    if (!fs.existsSync(testPtFolderRoot)) {
-        fs.mkdirSync(testPtFolderRoot, {recursive: true});
+    if (!fs.existsSync(path.join(...testPtFolderRoot))) {
+        fs.mkdirSync(path.join(...testPtFolderRoot), {recursive: true});
     }
 
 })
 
 afterAll(() => {
 
-    fs.readdir(testPtFolderRoot, (err, files) => {
+    fs.readdir(path.join(...testPtFolderRoot), (err, files) => {
         if (err) throw err;
 
         for (const file of files) {
 
-            fs.rm(testPtFolderRoot + file, { recursive: true, force: true }, () => {});
+            fs.rm(path.join(...testPtFolderRoot, file), { recursive: true, force: true }, () => {});
 
         }
     });
@@ -42,7 +42,7 @@ test('Simple many pt folder read', async() => {
     createTestFile(simpleFolderTest, null, fileName);
     createTestFile(simpleFolderTest, null, fileName);
 
-    const folders = await PtFolderSearcher.getAllPtFolders(simpleFolderTest.split('\\'));
+    const folders = await PtFolderSearcher.getAllPtFolders(simpleFolderTest);
     expect(folders.length === 3).toBeTruthy();
 
 })
@@ -60,8 +60,8 @@ test('Find single file', async() => {
     expect(foundFolders.length === 1).toBeTruthy();;
     const foundFolder = foundFolders[0];
     expect(foundFolder.exportState === PtDataExportState.READY_TO_READ).toBeTruthy();
-    expect(foundFolder.fileName === fileName + '.html').toBeTruthy();;
-    expect(foundFolder.ptFolder === ptFolder).toBeTruthy();;
+    expect(foundFolder.fileName === fileName + '.html').toBeTruthy();
+    expect(path.join(...foundFolder.ptFolderPath) === path.join(...ptFolder)).toBeTruthy();
 
 })
 
@@ -78,7 +78,7 @@ test('Find folder with two files', async () => {
     expect(foundFolders.length === 1).toBeTruthy();
     const foundFolder = foundFolders[0];
     expect(foundFolder.exportState === PtDataExportState.MULTIPLE_OUTPUT_FILES).toBeTruthy();
-    expect(foundFolder.ptFolder === ptFolder).toBeTruthy();;
+    expect(path.join(...foundFolder.ptFolderPath) === path.join(...ptFolder)).toBeTruthy();
 
 })
 
@@ -99,20 +99,22 @@ test('Find many folders', async () => {
 
 })
 
-function createTestFile (root: string, ptFolderName: string | null, fileName: string | null) {
+function createTestFile (root: string[], ptFolderName: string | null, fileName: string | null) {
 
-    const folderPath = getPtFolderPath(root, ptFolderName) + `news\\html\\temp\\`;
+    const folderPath = [...getPtFolderPath(root, ptFolderName), 'news', 'html', 'temp'];
+    const folder = path.join(...folderPath);
 
-    if (!fs.existsSync(folderPath)) {
-        fs.mkdirSync(folderPath, {recursive: true});
+    if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, {recursive: true});
     }
 
-    fs.writeFileSync(folderPath + (fileName ? fileName : getRandomName()) + ".html", '');
+    const testFilePath = [...folderPath, (fileName ? fileName : getRandomName()) + ".html"]
+    fs.writeFileSync(path.join(...testFilePath), '');
 
 }
 
-function getPtFolderPath (root: string, ptFolderName: string | null) {
-    return root + `saved_games\\${ptFolderName ? ptFolderName : getRandomName()}.pt\\`;
+function getPtFolderPath (root: string[], ptFolderName: string | null) {
+    return [...root, "saved_games",`${ptFolderName ? ptFolderName : getRandomName()}.pt`];
 }
 
 function getRandomName () {

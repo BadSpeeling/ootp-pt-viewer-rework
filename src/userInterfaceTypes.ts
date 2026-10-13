@@ -12,12 +12,12 @@ export interface LiveUpdate {
 }
 
 export interface PtDataFolder {
-    ptFolderPath: string,
+    ptFolderPath: string[],
 }
 
 export interface PtDataFile extends PtDataFolder {
     fileName: string,
-    filePath: string,
+    filePath: string[],
     description: string,
     tournamentStartDate: string,
     isIncludedFlag: boolean,
