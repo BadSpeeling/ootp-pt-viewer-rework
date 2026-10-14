@@ -119,10 +119,10 @@ function createTestFile (root: string[], ptFolderName: string | null, fileName: 
 
     const ptFolderPath = getPtFolderPath(root, ptFolderName)
     const ptDataExportFolderPath = [...ptFolderPath, 'news', 'html', 'temp'];
-    const folder = path.join(...ptDataExportFolderPath);
+    const ptDataExportFolder = path.join(...ptDataExportFolderPath);
 
-    if (!fs.existsSync(folder)) {
-        fs.mkdirSync(folder, {recursive: true});
+    if (!fs.existsSync(ptDataExportFolder)) {
+        fs.mkdirSync(ptDataExportFolder, {recursive: true});
     }
 
     const ptDataExportFilePath = [...ptDataExportFolderPath, (fileName ? fileName : getRandomName()) + ".html"]
