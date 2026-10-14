@@ -4,12 +4,15 @@ import * as path from 'node:path';
 
 import { PtFolderSearcher } from '../src/backend/PtFolderSearcher'
 import { PtDataExportState } from '../src/backend/types';
+import { PtFolderOperations } from '../src/backend/PtFolderOperations';
 
 const testPtFolderRoot = ['E:','ootp_data','pt_folder_test'];
 const simpleFolderTest = [...testPtFolderRoot, 'simple_test'];
 const simpleFileTest = [...testPtFolderRoot, 'simple_file_test'];
 const doubleFileTest = [...testPtFolderRoot, 'double_file_test'];
 const manyFolderTest = [...testPtFolderRoot, 'many_folder_test'];
+const deleteExportFileTest = [...testPtFolderRoot, 'delete_export_file_test'];
+
 let fileNameCounter = 1;
 
 beforeAll(() => {
@@ -99,17 +102,37 @@ test('Find many folders', async () => {
 
 })
 
+test('Delete pt export file', async () => {
+
+    const folder1 = "folder1";
+    const file1 = "file1";
+    const paths = createTestFile(deleteExportFileTest, folder1, file1);
+
+    await PtFolderOperations.deletePtDataFile(paths.ptFolderPath, paths.ptDataExportFilePath[paths.ptDataExportFilePath.length-1]);
+
+    const fileExists = fs.existsSync(path.join(...paths.ptDataExportFilePath));
+    expect(fileExists).toBeFalsy();
+
+})
+
 function createTestFile (root: string[], ptFolderName: string | null, fileName: string | null) {
 
-    const folderPath = [...getPtFolderPath(root, ptFolderName), 'news', 'html', 'temp'];
-    const folder = path.join(...folderPath);
+    const ptFolderPath = getPtFolderPath(root, ptFolderName)
+    const ptDataExportFolderPath = [...ptFolderPath, 'news', 'html', 'temp'];
+    const folder = path.join(...ptDataExportFolderPath);
 
     if (!fs.existsSync(folder)) {
         fs.mkdirSync(folder, {recursive: true});
     }
 
-    const testFilePath = [...folderPath, (fileName ? fileName : getRandomName()) + ".html"]
-    fs.writeFileSync(path.join(...testFilePath), '');
+    const ptDataExportFilePath = [...ptDataExportFolderPath, (fileName ? fileName : getRandomName()) + ".html"]
+    fs.writeFileSync(path.join(...ptDataExportFilePath), '');
+
+    return {
+        ptDataExportFolderPath,
+        ptFolderPath,
+        ptDataExportFilePath,
+    };
 
 }
 
