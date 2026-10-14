@@ -13,6 +13,7 @@ const doubleFileTest = [...testPtFolderRoot, 'double_file_test'];
 const manyFolderTest = [...testPtFolderRoot, 'many_folder_test'];
 const deleteExportFileTest = [...testPtFolderRoot, 'delete_export_file_test'];
 const errorTestFile = [...testPtFolderRoot, 'error_test'];
+const deleteExportFolderContents = [...testPtFolderRoot, 'delete_export_folder_contents'];
 
 let fileNameCounter = 1;
 
@@ -109,50 +110,40 @@ test('Delete pt export file', async () => {
     const file1 = "file1";
     const paths = createTestFile(deleteExportFileTest, folder1, file1);
 
-    await PtFolderOperations.deletePtDataFile(paths.ptFolderPath, paths.ptDataExportFilePath[paths.ptDataExportFilePath.length-1]);
+    await PtFolderOperations.deletePtDataFileAsync(paths.ptDataExportFilePath);
 
     const fileExists = fs.existsSync(path.join(...paths.ptDataExportFilePath));
     expect(fileExists).toBeFalsy();
 
 })
 
-test('Delete pt file non pt folder error', async () => {
-
-    let errMsg = '';
-
-    try {
-        await PtFolderOperations.deletePtDataFile(["E:", "folder", "not-pt-folder"], "file.html");
-    }
-    catch (err) {
-        errMsg = (err as Error).message
-    }
-
-    expect(errMsg.includes("is not a pt folder")).toBeTruthy();
-
-})
-
 test('Delete pt file/folder does not exist error', async () => {
 
     const testFolder = createTestFile(errorTestFile, "errorFolder", "errorFile");
+
     let errMsg = '';
 
     try {
-        await PtFolderOperations.deletePtDataFile(["E:", "ootp_data","pt_folder_test_not"], "file.html");
-    }
-    catch (err) {
-        errMsg = (err as Error).message
-    }
-
-    errMsg = '';
-
-    try {
-        await PtFolderOperations.deletePtDataFile(testFolder.ptFolderPath, "not-file.html");
+        await PtFolderOperations.deletePtDataFileAsync([...testFolder.ptDataExportFolderPath, "not-file.html"]);
     }
     catch (err) {
         errMsg = (err as Error).message
     }
 
     expect(errMsg.includes("does not exist")).toBeTruthy();
+
+})
+
+test('Empty pt export folder', async () => {
+
+    const folder1 = "folder1";
+    const paths = createTestFile(deleteExportFolderContents, folder1, null);
+    createTestFile(deleteExportFolderContents, folder1, null);
+
+    await PtFolderOperations.deleteAllPtDataFiles(paths.ptDataExportFolderPath);
+
+    const directoryContents = fs.readdirSync(path.join(...paths.ptDataExportFolderPath));
+    expect(directoryContents.length === 0).toBeTruthy();
 
 })
 
