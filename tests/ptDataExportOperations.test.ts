@@ -140,7 +140,7 @@ test('Empty pt export folder', async () => {
     const paths = createTestFile(deleteExportFolderContents, folder1, null);
     createTestFile(deleteExportFolderContents, folder1, null);
 
-    await PtFolderOperations.deleteAllPtDataFiles(paths.ptDataExportFolderPath);
+    await PtFolderOperations.deleteAllPtDataFilesAsync(paths.ptDataExportFolderPath);
 
     const directoryContents = fs.readdirSync(path.join(...paths.ptDataExportFolderPath));
     expect(directoryContents.length === 0).toBeTruthy();
