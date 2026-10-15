@@ -21,13 +21,15 @@ export function StatsImporter () {
                 description: "",
                 isIncludedFlag: false,
                 onlyMyTeamFlag: false,  
-                dataSaveStatus: TournamentFolderImportStatus.None,                       
+                dataSaveStatus: TournamentFolderImportStatus.None,
+                ptDataFolderPath: f.ptDataFolderPath,                       
             }
         }));
 
         setPtDataFolders(currentPtDataFiles.filter(f => f.exportState === PtDataExportState.MULTIPLE_OUTPUT_FILES).map(f => {
             return {
-                ptFolderPath: f.ptFolderPath,                    
+                ptFolderPath: f.ptFolderPath,        
+                ptDataFolderPath: f.ptDataFolderPath,            
             }
         }));
         

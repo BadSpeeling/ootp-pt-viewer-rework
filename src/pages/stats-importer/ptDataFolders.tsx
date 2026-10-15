@@ -7,11 +7,15 @@ type PtDataFoldersProps = {
 
 export function PtDataFolders ({ptDataFolders}: PtDataFoldersProps) {
     
+    const deleteAllFilesHandler = (ptDataFolder: string[]) => {
+        window.electronAPI.clearPtDataFolder(ptDataFolder);
+    }
+
     const tableBody = ptDataFolders.map((f, index) => {
         return (
             <tr className="table-header" key={index}>
                 <td className="p-2 text-center">{f.ptFolderPath}</td>
-                <td className="p-2 text-center"><button>Delete all files</button><button>Leave one file</button></td>
+                <td className="p-2 text-center"><button onClick={() => deleteAllFilesHandler(f.ptDataFolderPath)}>Delete all files</button><button>Leave one file</button></td>
             </tr>
         )
     })

@@ -351,6 +351,7 @@ export interface PtDataExportFile {
     ptFolderPath:string[],
     filePath:string[],
     fileName?:string,
+    ptDataFolderPath:string[],
 }
 
 export enum PtDataExportState {

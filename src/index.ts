@@ -11,6 +11,7 @@ import { Database } from './backend/database/Database';
 import { createLiveUpdateHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
+import { PtFolderOperations } from './backend/PtFolderOperations';
 
 declare global {
     
@@ -26,6 +27,7 @@ declare global {
         getExportedPtDataFiles: () => Promise<PtDataExportFile[]>,
         importTournamentFile: (request: ImportStatFileRequest) => Promise<boolean>,
         getTournamentTypes: () => Promise<TournamentType[]>,
+        clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
     }
 
 }
@@ -89,6 +91,7 @@ ipcMain.handle('createLiveUpdate', createLiveUpdate);
 ipcMain.handle('getExportedPtDataFiles', getExportedPtDataFiles);
 ipcMain.handle('importTournamentFile', importTournamentFile);
 ipcMain.handle('getTournamentTypes', getTournamentTypes);
+ipcMain.handle('clearPtDataFolder', clearPtDataFolder);
 
 function get () {
     return "Hello!";
@@ -155,6 +158,7 @@ async function importTournamentFile (e: IpcMainInvokeEvent, request: ImportStatF
           TournamentTypeID: request.tournamentTypeID,
           TournamentStartDate: request.tournamentStartDate
       });
+      await PtFolderOperations.deletePtDataFileAsync(request.statsFilePath);
     }
     catch (err) {
       //TODO: log
@@ -176,6 +180,17 @@ async function getTournamentTypes (): Promise<TournamentType[]> {
     catch (err) {
       //TODO: log
       return [];      
+    }
+
+}
+
+async function clearPtDataFolder (e: IpcMainInvokeEvent, ptDataFolderPath: string[]): Promise<void> {
+
+    try {
+      await PtFolderOperations.deleteAllPtDataFilesAsync(ptDataFolderPath);
+    }
+    catch (err) {
+      //TODO: log
     }
 
 }

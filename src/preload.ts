@@ -12,5 +12,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getExportedPtDataFiles: () => ipcRenderer.invoke('getExportedPtDataFiles'),
     importTournamentFile: (request: ImportStatFileRequest) => ipcRenderer.invoke('importTournamentFile', request),
     getTournamentTypes: () => ipcRenderer.invoke('getTournamentTypes'),
-
+    clearPtDataFolder: (ptDataFolderPath: string[]) => ipcRenderer.invoke('clearPtDataFolder', ptDataFolderPath),
 });

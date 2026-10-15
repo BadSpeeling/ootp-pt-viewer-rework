@@ -21,15 +21,15 @@ export class PtFolderOperations {
 
     }
 
-    static async deleteAllPtDataFiles (ptDataFolderPath: string[]) {
+    static async deleteAllPtDataFilesAsync (ptDataFolderPath: string[]) {
 
         if (!fs.existsSync(path.join(...ptDataFolderPath))) {
             throw Error (path.join(...ptDataFolderPath) + " does not exist");
         }
 
         const ptDataFiles = await this.findAllPtDataFiles(ptDataFolderPath);
-        const ptDataFileDeleteActions = ptDataFiles.map(f => {
-            return this.deleteFile([...ptDataFolderPath, f]);
+        const ptDataFileDeleteActions = ptDataFiles.map(ptDataFile => {
+            return this.deleteFile([...ptDataFolderPath, ptDataFile]);
         })
 
         await Promise.all(ptDataFileDeleteActions);

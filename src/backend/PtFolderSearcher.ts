@@ -48,7 +48,8 @@ export class PtFolderSearcher {
                         resolve({
                             exportState: PtDataExportState.ERROR,
                             ptFolderPath: ptFolderPath,
-                            filePath: htmlStatsFolderPath,                            
+                            filePath: htmlStatsFolderPath,
+                            ptDataFolderPath: htmlStatsFolderPath,                            
                         })                
                     }
                     else {
@@ -58,6 +59,7 @@ export class PtFolderSearcher {
                                 ptFolderPath: ptFolderPath,
                                 filePath: htmlStatsFolderPath,
                                 fileName: files[0],
+                                ptDataFolderPath: htmlStatsFolderPath,                            
                             })
                         }
                         else if (files.length > 1) {
@@ -65,6 +67,7 @@ export class PtFolderSearcher {
                                 exportState: PtDataExportState.MULTIPLE_OUTPUT_FILES,
                                 ptFolderPath: ptFolderPath,
                                 filePath: htmlStatsFolderPath,
+                                ptDataFolderPath: htmlStatsFolderPath,
                             })
                         }
                         else {
@@ -72,6 +75,7 @@ export class PtFolderSearcher {
                                 exportState: PtDataExportState.NO_OUTPUT_FILES,
                                 ptFolderPath: ptFolderPath,
                                 filePath: htmlStatsFolderPath,
+                                ptDataFolderPath: htmlStatsFolderPath,
                             })
                         }
                     }

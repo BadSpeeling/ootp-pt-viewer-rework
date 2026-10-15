@@ -13,6 +13,7 @@ export interface LiveUpdate {
 
 export interface PtDataFolder {
     ptFolderPath: string[],
+    ptDataFolderPath: string[],
 }
 
 export interface PtDataFile extends PtDataFolder {
