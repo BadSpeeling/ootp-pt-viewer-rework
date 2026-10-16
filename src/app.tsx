@@ -2,7 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 
 import { CurrentPage } from './userInterfaceTypes'
-import { Landing, CardImporter, StatsImporter } from './pages'
+import { Landing, CardImporter, StatsImporter, TournamentStats } from './pages'
 
 import { ToastContainer } from 'react-toastify';
 
@@ -16,6 +16,7 @@ function App () {
             {currentPage === CurrentPage.LANDING && <div><Landing setCurrentPage={setCurrentPage} /></div>}
             {currentPage === CurrentPage.CARD_IMPORTER && <div><CardImporter /></div>}
             {currentPage === CurrentPage.STATS_IMPORTER && <div><StatsImporter /></div>}
+            {currentPage === CurrentPage.TOURNAMENT_STATS && <div><TournamentStats /></div>}
         </div>
     )
 

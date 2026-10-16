@@ -1,5 +1,7 @@
+import { Bats, Position } from "./backend/types";
+
 export enum CurrentPage {
-    LANDING,CARD_IMPORTER,STATS_IMPORTER
+    LANDING,CARD_IMPORTER,STATS_IMPORTER,TOURNAMENT_STATS
 }
 
 export enum ImportCardResult {
@@ -33,4 +35,16 @@ export enum TournamentFolderImportStatus {
 export interface TournamentType {
     TournamentTypeID: number,
     TournamentName: string,
+}
+
+export interface TournamentBattingStats {
+    CardTitle: string,
+    CardValue: number,
+    Position: Position,
+    Bats: Bats,
+    PA: number,
+    AVG: number,
+    OBP: number,
+    SLG: number,
+    OPS: number,
 }
