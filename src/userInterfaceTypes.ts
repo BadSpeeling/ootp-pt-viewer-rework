@@ -40,8 +40,8 @@ export interface TournamentType {
 export interface TournamentBattingStats {
     CardTitle: string,
     CardValue: number,
-    Position: Position,
-    Bats: Bats,
+    Position: string,
+    Bats: string,
     PA: number,
     AVG: number,
     OBP: number,

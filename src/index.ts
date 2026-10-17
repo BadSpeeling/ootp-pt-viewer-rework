@@ -29,7 +29,7 @@ declare global {
         importTournamentFile: (request: ImportStatFileRequest) => Promise<boolean>,
         getTournamentTypes: () => Promise<TournamentType[]>,
         clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
-        getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats>,
+        getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
     }
 
 }
@@ -198,24 +198,20 @@ async function clearPtDataFolder (e: IpcMainInvokeEvent, ptDataFolderPath: strin
 
 }
 
-async function getTournamentBattingStats (e: IpcMainInvokeEvent, filter: BattingStatsFilter) {
-
-    const headers = ['CardTitle','CardValue','Position','Bats','PA','AVG','OBP','SLG','OPS'];
+async function getTournamentBattingStats (e: IpcMainInvokeEvent, filter: BattingStatsFilter): Promise<TournamentBattingStats[]> {
 
     try {
 
       const battingStatsGetter: IBattingStatsGetter = new LocalSqliteBattingStatsGetter(getDatabase());
       const battingStats = await battingStatsGetter.getTournamentStatsAsync(filter);
     
-      return {headers, stats: battingStats};
+      return battingStats;
     
     }
     catch (err) {
       //TODO: log
-      return {headers, stats: [] as TournamentBattingStats[]};
+      return [];
     }
-
-    
 
 }
 
