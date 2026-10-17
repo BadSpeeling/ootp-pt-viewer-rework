@@ -302,6 +302,22 @@ export interface LeaguePlayStats {
     LeagueYear: number,
 }
 
+export interface TournamentBattingStatsSum {
+    PtCardID: number,
+    CardTitle: string,
+    CardValue: number,
+    Position: string,
+    Bats: string,
+    H: number,
+    AB: number,
+    BB: number,
+    IBB: number,
+    HP: number,
+    SF: number,
+    PA: number,
+    TB: number,
+}
+
 export type BattingStatsExpanded = BattingStats & Partial<PtCard> & Partial<LeaguePlayStats>
 export type PitchingStatsExpanded = PitchingStats & Partial<PtCard> & Partial<LeaguePlayStats>
 

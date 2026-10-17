@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
-import { LiveUpdate, ImportCardResult, TournamentType } from './userInterfaceTypes';
+import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
 import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState, ImportStatFileRequest } from './backend/types';
@@ -12,6 +12,7 @@ import { createLiveUpdateHandlerAsync, getTournamentTypesHandlerAsync } from './
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
 import { PtFolderOperations } from './backend/PtFolderOperations';
+import { BattingStatsFilter, IBattingStatsGetter, LocalSqliteBattingStatsGetter } from './backend/stats-reading';
 
 declare global {
     
@@ -28,6 +29,7 @@ declare global {
         importTournamentFile: (request: ImportStatFileRequest) => Promise<boolean>,
         getTournamentTypes: () => Promise<TournamentType[]>,
         clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
+        getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
     }
 
 }
@@ -92,6 +94,7 @@ ipcMain.handle('getExportedPtDataFiles', getExportedPtDataFiles);
 ipcMain.handle('importTournamentFile', importTournamentFile);
 ipcMain.handle('getTournamentTypes', getTournamentTypes);
 ipcMain.handle('clearPtDataFolder', clearPtDataFolder);
+ipcMain.handle('getTournamentBattingStats', getTournamentBattingStats);
 
 function get () {
     return "Hello!";
@@ -191,6 +194,23 @@ async function clearPtDataFolder (e: IpcMainInvokeEvent, ptDataFolderPath: strin
     }
     catch (err) {
       //TODO: log
+    }
+
+}
+
+async function getTournamentBattingStats (e: IpcMainInvokeEvent, filter: BattingStatsFilter): Promise<TournamentBattingStats[]> {
+
+    try {
+
+      const battingStatsGetter: IBattingStatsGetter = new LocalSqliteBattingStatsGetter(getDatabase());
+      const battingStats = await battingStatsGetter.getTournamentStatsAsync(filter);
+    
+      return battingStats;
+    
+    }
+    catch (err) {
+      //TODO: log
+      return [];
     }
 
 }

@@ -2,6 +2,7 @@
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
 import { contextBridge, ipcRenderer } from 'electron/renderer'
 import { ImportStatFileRequest } from './backend/types';
+import { BattingStatsFilter } from './backend/stats-reading';
 
 contextBridge.exposeInMainWorld('electronAPI', {
     
@@ -13,4 +14,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     importTournamentFile: (request: ImportStatFileRequest) => ipcRenderer.invoke('importTournamentFile', request),
     getTournamentTypes: () => ipcRenderer.invoke('getTournamentTypes'),
     clearPtDataFolder: (ptDataFolderPath: string[]) => ipcRenderer.invoke('clearPtDataFolder', ptDataFolderPath),
+    getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => ipcRenderer.invoke('getTournamentBattingStats', battingStatsFilter),
+
 });
