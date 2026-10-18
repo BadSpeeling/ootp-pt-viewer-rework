@@ -154,9 +154,8 @@ export function PtDataFiles ({ptDataFiles, setPtDataFiles}: PtDataFilesProps) {
 
 function getTournamentFolderImportStatus (status: TournamentFolderImportStatus) {
 
-    if (status === TournamentFolderImportStatus.Pending) {
-        return <div>?</div>
-        // return <div className="loader"></div>
+    if (status === TournamentFolderImportStatus.Pending) {        
+        return <div className="loader"></div>
     }
     else if (status === TournamentFolderImportStatus.Successful) {
         return <div>&#x2705;</div>
