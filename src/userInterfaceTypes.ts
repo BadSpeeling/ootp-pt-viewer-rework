@@ -61,3 +61,13 @@ export interface TournamentPitchingStats {
     'H/9': number,
     ERA: number,
 }
+
+export interface TournamentResult {
+    W: number,
+    L: number,
+    StatsBatchID: number,
+    TeamName: string,
+    TournamentTypeID: number,
+    TournamentName: string,
+    TournamentStartDate: string,
+}

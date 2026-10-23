@@ -164,7 +164,10 @@ export interface PtCard {
 }
 
 export interface BattingStats {
+    BattingStatsID: number,
     PtCardID: number,
+    StatsBatchID: number,
+    TeamName: string,
     G: number, 
     GS: number, 
     PA: number,
@@ -214,7 +217,10 @@ export interface BattingStats {
 }
 
 export interface PitchingStats {
+    PitchingStatsID: number,
     PtCardID: number,
+    StatsBatchID: number,
+    TeamName: string,
     G: number,
     GS: number,
     W: number,
