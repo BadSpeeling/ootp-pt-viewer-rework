@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
-import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats } from './userInterfaceTypes';
+import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats, TournamentPitchingStats } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
 import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState, ImportStatFileRequest } from './backend/types';
@@ -12,7 +12,7 @@ import { createLiveUpdateHandlerAsync, getTournamentTypesHandlerAsync } from './
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
 import { PtFolderOperations } from './backend/PtFolderOperations';
-import { BattingStatsFilter, IBattingStatsGetter, LocalSqliteBattingStatsGetter } from './backend/stats-reading';
+import { BattingStatsFilter, IBattingStatsGetter, IPitchingStatsGetter, LocalSqliteBattingStatsGetter, LocalSqlitePitchingStatsGetter, PitchingStatsFilter } from './backend/stats-reading';
 
 declare global {
     
@@ -30,6 +30,7 @@ declare global {
         getTournamentTypes: () => Promise<TournamentType[]>,
         clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
         getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
+        getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => Promise<TournamentPitchingStats[]>,
     }
 
 }
@@ -95,6 +96,7 @@ ipcMain.handle('importTournamentFile', importTournamentFile);
 ipcMain.handle('getTournamentTypes', getTournamentTypes);
 ipcMain.handle('clearPtDataFolder', clearPtDataFolder);
 ipcMain.handle('getTournamentBattingStats', getTournamentBattingStats);
+ipcMain.handle('getTournamentPitchingStats', getTournamentPitchingStats);
 
 function get () {
     return "Hello!";
@@ -206,6 +208,23 @@ async function getTournamentBattingStats (e: IpcMainInvokeEvent, filter: Batting
       const battingStats = await battingStatsGetter.getTournamentStatsAsync(filter);
     
       return battingStats;
+    
+    }
+    catch (err) {
+      //TODO: log
+      return [];
+    }
+
+}
+
+async function getTournamentPitchingStats (e: IpcMainInvokeEvent, filter: PitchingStatsFilter): Promise<TournamentPitchingStats[]> {
+
+    try {
+
+      const pitchingStatsGetter: IPitchingStatsGetter = new LocalSqlitePitchingStatsGetter(getDatabase());
+      const pitchingStats = await pitchingStatsGetter.getTournamentStatsAsync(filter);
+    
+      return pitchingStats;
     
     }
     catch (err) {

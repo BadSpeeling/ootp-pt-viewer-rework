@@ -318,6 +318,21 @@ export interface TournamentBattingStatsSum {
     TB: number,
 }
 
+export interface TournamentPitchingStatsSum {
+    PtCardID: number,
+    CardTitle: string,
+    CardValue: number,
+    Throws: string,
+    G: number,
+    GS: number,
+    K: number,
+    BB: number,
+    HR: number,
+    HA: number,
+    ER: number,
+    Outs: number,
+}
+
 export type BattingStatsExpanded = BattingStats & Partial<PtCard> & Partial<LeaguePlayStats>
 export type PitchingStatsExpanded = PitchingStats & Partial<PtCard> & Partial<LeaguePlayStats>
 
@@ -390,4 +405,8 @@ export interface TournamentType {
     IsCap: boolean,
     IsLive: boolean,
     CapAmount: number,
+}
+
+export enum StatsType {
+    BATTING,PITCHING,FIELDING,
 }

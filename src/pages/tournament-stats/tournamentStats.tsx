@@ -4,34 +4,24 @@ import { toast } from 'react-toastify';
 
 import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
-import { Bats, Throws, Position } from "../../backend/types";
+import { Bats, Throws, Position, StatsType } from "../../backend/types";
 import { TournamentTypePicker } from "../tournamentTypePicker";
-import { TournamentBattingStats, TournamentType } from '../../userInterfaceTypes'
+import { TournamentBattingStats, TournamentPitchingStats, TournamentType, } from '../../userInterfaceTypes'
 import { TournamentDatePicker } from "../tournamentDatePicker";
 
 export function TournamentStats () {
 
-    const [playerStats,setPlayerStats] = React.useState([] as TournamentBattingStats[]);
-    // const [headers, setHeaders] = React.useState([] as TableColumn<TournamentBattingStats>[])
+    const [battingStats,setBattingStats] = React.useState([] as TournamentBattingStats[]);
+    const [pitchingStats,setPitchingStats] = React.useState([] as TournamentPitchingStats[]);
     const [tournamentTypes, setTournamentTypes] = React.useState([] as TournamentType[]);
     const [selectedTournamentType, setSelectedTournamentType] = React.useState(null as null | TournamentType);
-    const [statsTypeID, setStatsType] = React.useState(0);
+    const [statsTypeID, setStatsType] = React.useState(StatsType.BATTING);
     const [qualifierValue, setQualifierValue] = React.useState('');
     const [positions, setPositions] = React.useState([] as string[])
     const [tournamentStartDate, setTournamentStartDate] = React.useState('1970-01-01');
     const [tournamentEndDate, setTournamentEndDate] = React.useState('2099-01-01');
 
-    const columns: TableColumn<TournamentBattingStats>[] = [
-        { name: 'Card Title', selector: r => r.CardTitle, width: '300px', minWidth: '120px' },
-        { name: 'CardValue', selector: r => r.CardValue, },
-        { name: 'Position', selector: r => r.Position, },
-        { name: 'Bats', selector: r => r.Bats, },
-        { name: 'PA', selector: r => r.PA, sortable: true },
-        { name: 'AVG', selector: r => r.AVG, },
-        { name: 'OBP', selector: r => r.OBP, },
-        { name: 'SLG', selector: r => r.SLG, },
-        { name: 'OPS', selector: r => r.OPS, },
-    ];
+    const columns = getHeaders(statsTypeID);
 
     React.useEffect(() => {
         
@@ -51,9 +41,16 @@ export function TournamentStats () {
         if (!selectedTournamentType?.TournamentTypeID) {
             toast.error("Select a tournament!");
         }
+        
+        if (statsTypeID === StatsType.BATTING) {
+            const statsResult = await getBattingStats(selectedTournamentType!.TournamentTypeID, qualifierValue.length > 0 ? parseInt(qualifierValue) : 0, 'ANY', tournamentStartDate, tournamentEndDate);
+            setBattingStats(statsResult);
+        }
+        else if (statsTypeID === StatsType.PITCHING) {
+            const statsResult = await getPitchingStats(selectedTournamentType!.TournamentTypeID, qualifierValue.length > 0 ? parseInt(qualifierValue) : 0, tournamentStartDate, tournamentEndDate);
+            setPitchingStats(statsResult);
+        }
 
-        const statsResult = await getPlayerStats(selectedTournamentType!.TournamentTypeID, statsTypeID, qualifierValue.length > 0 ? parseInt(qualifierValue) : 0, 'ANY', tournamentStartDate, tournamentEndDate);
-        setPlayerStats(statsResult);
 
     }
     
@@ -69,8 +66,8 @@ export function TournamentStats () {
                 <div className="mb-2"><TournamentDatePicker tournamentStartDate={tournamentStartDate} setTournamentStartDate={setTournamentStartDate} tournamentEndDate={tournamentEndDate} setTournamentEndDate={setTournamentEndDate}/></div>
                 <div className="mb-2">
                     <select className="border-gray border-1 rounded-md" value={statsTypeID} onChange={(e) => setStatsType(parseInt(e.target.value))}>
-                        <option value={0}>Batting</option>
-                        <option value={1}>Pitching</option>
+                        <option value={StatsType.BATTING}>Batting</option>
+                        <option value={StatsType.PITCHING}>Pitching</option>
                     </select>
                 </div>
                 <div className="mb-2">
@@ -90,9 +87,15 @@ export function TournamentStats () {
                 {/* <div>Min {getQualifierName(statsTypeID)} to qualify: <input className="border-gray border-1 rounded-md" value={qualifierValue} onChange={(e) => setQualifierValue(e.target.value)}/></div> */}
             </div>
             { 
-                playerStats.length > 0 &&
+                (battingStats.length > 0 && statsTypeID === StatsType.BATTING) &&
                 <div className="m-4">
-                    <DataTable  columns={columns} data={playerStats} pagination />
+                    <DataTable columns={columns as TableColumn<TournamentBattingStats>[]} data={battingStats} pagination />
+                </div>
+            }
+            { 
+                (pitchingStats.length > 0 && statsTypeID === StatsType.PITCHING) &&
+                <div className="m-4">
+                    <DataTable columns={columns as TableColumn<TournamentPitchingStats>[]} data={pitchingStats} pagination />
                 </div>
             }
             <div className="m-4">
@@ -103,7 +106,7 @@ export function TournamentStats () {
 
 }
 
-async function getPlayerStats (tournamentTypeID: number, statsTypeID: number, qualifierValue: number, positions: 'ANY'|Position[], tournamentStartDate: string, tournamentEndDate: string) {
+async function getBattingStats (tournamentTypeID: number, qualifierValue: number, positions: 'ANY'|Position[], tournamentStartDate: string, tournamentEndDate: string) {
 
     const response = await window.electronAPI.getTournamentBattingStats({
         TournamentTypeID: tournamentTypeID, 
@@ -115,4 +118,53 @@ async function getPlayerStats (tournamentTypeID: number, statsTypeID: number, qu
     });
     return response;
 
+}
+
+async function getPitchingStats (tournamentTypeID: number, qualifierValue: number, tournamentStartDate: string, tournamentEndDate: string) {
+
+    const response = await window.electronAPI.getTournamentPitchingStats({
+        TournamentTypeID: tournamentTypeID, 
+        TournamentTimeRange: {
+            StartDate:tournamentStartDate,
+            EndDate:tournamentEndDate
+        }
+    });
+    return response;
+
+}
+
+function getHeaders (statsType: StatsType) {
+
+    if (statsType === StatsType.BATTING) {
+        const columns: TableColumn<TournamentBattingStats>[] = [
+            { name: 'Card Title', selector: r => r.CardTitle, width: '300px', minWidth: '120px' },
+            { name: 'CardValue', selector: r => r.CardValue, },
+            { name: 'Position', selector: r => r.Position, },
+            { name: 'Bats', selector: r => r.Bats, },
+            { name: 'PA', selector: r => r.PA, sortable: true },
+            { name: 'AVG', selector: r => r.AVG, },
+            { name: 'OBP', selector: r => r.OBP, },
+            { name: 'SLG', selector: r => r.SLG, },
+            { name: 'OPS', selector: r => r.OPS, },
+        ];
+        return columns;
+    }
+    else if (statsType === StatsType.PITCHING) {
+        const columns: TableColumn<TournamentPitchingStats>[] = [
+            { name: 'Card Title', selector: r => r.CardTitle, width: '300px', minWidth: '120px' },
+            { name: 'Card Value', selector: r => r.CardValue, },
+            { name: 'Throws', selector: r => r.Throws, },
+            { name: 'G', selector: r => r.G, },
+            { name: 'GS', selector: r => r.GS, sortable: true },
+            { name: 'K/9', selector: r => r["K/9"], },
+            { name: 'BB/9', selector: r => r["BB/9"], },
+            { name: 'HR/9', selector: r => r["HR/9"], },
+            { name: 'H/9', selector: r => r["H/9"], },
+            { name: 'ERA', selector: r => r["ERA"], },
+        ];
+        return columns;
+    }
+    else {
+        return []
+    }
 }

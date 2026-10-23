@@ -48,3 +48,16 @@ export interface TournamentBattingStats {
     SLG: number,
     OPS: number,
 }
+
+export interface TournamentPitchingStats {
+    CardTitle: string,
+    CardValue: number,
+    Throws: string,
+    G: number,
+    GS: number,
+    'K/9': number,
+    'BB/9': number,
+    'HR/9': number,
+    'H/9': number,
+    ERA: number,
+}
