@@ -1,6 +1,7 @@
 import * as React from "react";
 import { PtDataFile, TournamentFolderImportStatus, TournamentType } from '../../userInterfaceTypes'
 import { TournamentTypePicker } from "../tournamentTypePicker";
+import { toast } from "react-toastify";
 
 type PtDataFilesProps = {
     ptDataFiles: PtDataFile[],
@@ -61,56 +62,63 @@ export function PtDataFiles ({ptDataFiles, setPtDataFiles}: PtDataFilesProps) {
 
     const handleTournamentImport = async () => {
 
-        //set all pt folders marked to be included as pending
-        setPtDataFiles(ptDataFiles.map(ptDataFile => {
-            if (ptDataFile.isIncludedFlag) {
-                return {
-                    ...ptDataFile,
-                    dataSaveStatus: TournamentFolderImportStatus.Pending,
+        if (!selectedTournamentType) {
+            toast.error("Select a tournament type!");
+        }
+
+        else {
+            //set all pt folders marked to be included as pending
+            setPtDataFiles(ptDataFiles.map(ptDataFile => {
+                if (ptDataFile.isIncludedFlag) {
+                    return {
+                        ...ptDataFile,
+                        dataSaveStatus: TournamentFolderImportStatus.Pending,
+                    }
                 }
-            }
-            else {
-                return ptDataFile;
-            }
-        }));
-        
-        const updateFinishedPtDataFileImport = (index: number, isSuccessFlag: boolean) => {
+                else {
+                    return ptDataFile;
+                }
+            }));
             
-            setPtDataFiles((ptDataFiles) => {
-                const finishedPtDataFile = {
-                    ...ptDataFiles[index], 
-                    dataSaveStatus: isSuccessFlag ? TournamentFolderImportStatus.Successful : TournamentFolderImportStatus.Failure
-                };
-                const updatedPtDataFiles = [...ptDataFiles.slice(0, index), finishedPtDataFile, ...ptDataFiles.slice(index+1)];
-                return updatedPtDataFiles;
+            const updateFinishedPtDataFileImport = (index: number, isSuccessFlag: boolean) => {
+                
+                setPtDataFiles((ptDataFiles) => {
+                    const finishedPtDataFile = {
+                        ...ptDataFiles[index], 
+                        dataSaveStatus: isSuccessFlag ? TournamentFolderImportStatus.Successful : TournamentFolderImportStatus.Failure
+                    };
+                    const updatedPtDataFiles = [...ptDataFiles.slice(0, index), finishedPtDataFile, ...ptDataFiles.slice(index+1)];
+                    return updatedPtDataFiles;
+                });
+
+            }
+
+            //send request for each pt folder to import data
+            ptDataFiles.forEach((ptDataFile, ptDataFileIndex) => {
+                
+                if (ptDataFile.isIncludedFlag) {
+                
+                    new Promise<boolean>(async (resolve,reject) => {
+
+                        const successFlag = await window.electronAPI.importTournamentFile({
+                            description: ptDataFile.description,
+                            statsFilePath: [...ptDataFile.filePath, ptDataFile.fileName],
+                            tournamentStartDate: ptDataFile.tournamentStartDate,
+                            tournamentTypeID: selectedTournamentType!.TournamentTypeID,
+                        })
+
+                        resolve(successFlag)
+
+                    })
+                    .then(result => {
+                        updateFinishedPtDataFileImport(ptDataFileIndex, result);
+                    })
+
+                }
+
             });
 
         }
-
-        //send request for each pt folder to import data
-        ptDataFiles.forEach((ptDataFile, ptDataFileIndex) => {
-            
-            if (ptDataFile.isIncludedFlag) {
-            
-                new Promise<boolean>(async (resolve,reject) => {
-
-                    const successFlag = await window.electronAPI.importTournamentFile({
-                        description: ptDataFile.description,
-                        statsFilePath: [...ptDataFile.filePath, ptDataFile.fileName],
-                        tournamentStartDate: ptDataFile.tournamentStartDate,
-                        tournamentTypeID: 16,
-                    })
-
-                    resolve(successFlag)
-
-                })
-                .then(result => {
-                    updateFinishedPtDataFileImport(ptDataFileIndex, result);
-                })
-
-            }
-
-        });
 
     }
 
