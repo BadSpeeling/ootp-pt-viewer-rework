@@ -1,7 +1,7 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
-import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats, TournamentPitchingStats } from './userInterfaceTypes';
+import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
 import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState, ImportStatFileRequest } from './backend/types';
@@ -13,6 +13,8 @@ import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
 import { PtFolderOperations } from './backend/PtFolderOperations';
 import { BattingStatsFilter, IBattingStatsGetter, IPitchingStatsGetter, LocalSqliteBattingStatsGetter, LocalSqlitePitchingStatsGetter, PitchingStatsFilter } from './backend/stats-reading';
+import { GetRecentTournamentResultsQuery } from './backend/database/repositories/types';
+import { TournamentRepository } from './backend/database/repositories';
 
 declare global {
     
@@ -31,6 +33,7 @@ declare global {
         clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
         getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
         getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => Promise<TournamentPitchingStats[]>,
+        getTournamentResults: (query: GetRecentTournamentResultsQuery) => Promise<TournamentResult[]>
     }
 
 }
@@ -97,6 +100,7 @@ ipcMain.handle('getTournamentTypes', getTournamentTypes);
 ipcMain.handle('clearPtDataFolder', clearPtDataFolder);
 ipcMain.handle('getTournamentBattingStats', getTournamentBattingStats);
 ipcMain.handle('getTournamentPitchingStats', getTournamentPitchingStats);
+ipcMain.handle('getTournamentResults', getTournamentResults);
 
 function get () {
     return "Hello!";
@@ -230,6 +234,20 @@ async function getTournamentPitchingStats (e: IpcMainInvokeEvent, filter: Pitchi
     catch (err) {
       //TODO: log
       return [];
+    }
+
+}
+
+async function getTournamentResults (e: IpcMainInvokeEvent, query: GetRecentTournamentResultsQuery) {
+
+    try {
+        const repo = new TournamentRepository(getDatabase());
+        const tournamentResults = await repo.getRecentTournamentResultsAsync(query);
+        return tournamentResults;
+    }
+    catch (err) {
+        //TODO: log
+        return [];
     }
 
 }

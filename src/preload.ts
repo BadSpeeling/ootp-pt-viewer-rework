@@ -3,6 +3,7 @@
 import { contextBridge, ipcRenderer } from 'electron/renderer'
 import { ImportStatFileRequest } from './backend/types';
 import { BattingStatsFilter, PitchingStatsFilter } from './backend/stats-reading';
+import { GetRecentTournamentResultsQuery } from './backend/database/repositories/types';
 
 contextBridge.exposeInMainWorld('electronAPI', {
     
@@ -16,5 +17,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     clearPtDataFolder: (ptDataFolderPath: string[]) => ipcRenderer.invoke('clearPtDataFolder', ptDataFolderPath),
     getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => ipcRenderer.invoke('getTournamentBattingStats', battingStatsFilter),
     getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => ipcRenderer.invoke('getTournamentPitchingStats', pitchingStatsFilter),
+    getTournamentResults: (query: GetRecentTournamentResultsQuery) => ipcRenderer.invoke('getTournamentResults', query),
 
 });

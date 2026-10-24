@@ -28,7 +28,7 @@ FROM (
 		FROM StatsBatch
 		WHERE 1=1
 		AND unixepoch(TournamentStartDate) >= unixepoch('${query.Timeframe?.StartDate}')
-		LIMIT ${query.TournamentCount}
+		${query.TournamentCount ? "LIMIT " + query.TournamentCount : ""}
 	) sb
 	JOIN PitchingStats ps on sb.StatsBatchID = ps.StatsBatchID
 	JOIN TournamentType tt on sb.TournamentTypeID = tt.TournamentTypeID
