@@ -27,13 +27,27 @@ export class DataInserter {
 
     }
 
+    private convertDataValue (value: string|number|boolean) {
+
+        switch (typeof value) {
+            case "string":
+            case "number":
+                return value;
+            case "boolean":
+                return value ? 1 : 0;
+            default:
+                return value;
+        }
+
+    }
+
     private objectToMap (insertableData: object) {
 
         const insertableDataMap: Map<string,string|number> = new Map();
 
         for (const [columnName,value] of Object.entries(insertableData)) {
-            if (typeof value === 'string' || typeof value === 'number') {
-                insertableDataMap.set(columnName, value);
+            if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+                insertableDataMap.set(columnName, this.convertDataValue(value));
             }
         }
 
