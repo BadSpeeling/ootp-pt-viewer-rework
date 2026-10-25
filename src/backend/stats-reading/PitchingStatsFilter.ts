@@ -3,5 +3,6 @@ export interface PitchingStatsFilter {
     TournamentTimeRange?: {
         StartDate: string,
         EndDate: string,
-    } 
+    },
+    TeamName?: string,
 }

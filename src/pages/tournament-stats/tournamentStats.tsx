@@ -11,6 +11,8 @@ import { TournamentDatePicker } from "../tournamentDatePicker";
 
 export function TournamentStats () {
 
+    const [teamName,setTeamName] = React.useState('');
+
     const [battingStats,setBattingStats] = React.useState([] as TournamentBattingStats[]);
     const [pitchingStats,setPitchingStats] = React.useState([] as TournamentPitchingStats[]);
     const [tournamentTypes, setTournamentTypes] = React.useState([] as TournamentType[]);
@@ -43,11 +45,11 @@ export function TournamentStats () {
         }
         
         if (statsTypeID === StatsType.BATTING) {
-            const statsResult = await getBattingStats(selectedTournamentType!.TournamentTypeID, qualifierValue.length > 0 ? parseInt(qualifierValue) : 0, 'ANY', tournamentStartDate, tournamentEndDate);
+            const statsResult = await getBattingStats(selectedTournamentType!.TournamentTypeID, qualifierValue.length > 0 ? parseInt(qualifierValue) : 0, 'ANY', tournamentStartDate, tournamentEndDate, teamName);
             setBattingStats(statsResult);
         }
         else if (statsTypeID === StatsType.PITCHING) {
-            const statsResult = await getPitchingStats(selectedTournamentType!.TournamentTypeID, qualifierValue.length > 0 ? parseInt(qualifierValue) : 0, tournamentStartDate, tournamentEndDate);
+            const statsResult = await getPitchingStats(selectedTournamentType!.TournamentTypeID, qualifierValue.length > 0 ? parseInt(qualifierValue) : 0, tournamentStartDate, tournamentEndDate, teamName);
             setPitchingStats(statsResult);
         }
 
@@ -62,6 +64,7 @@ export function TournamentStats () {
     return (
         <>
             <div className="m-4">
+                <div>Data for team: <input value={teamName} onChange={(e) => setTeamName(e.target.value)} /></div>
                 <div className="mb-2"><TournamentTypePicker selectedTournamentType={selectedTournamentType} setSelectedTournamentType={setSelectedTournamentType} tournaments={tournamentTypes}/></div>
                 <div className="mb-2"><TournamentDatePicker tournamentStartDate={tournamentStartDate} setTournamentStartDate={setTournamentStartDate} tournamentEndDate={tournamentEndDate} setTournamentEndDate={setTournamentEndDate}/></div>
                 <div className="mb-2">
@@ -106,7 +109,7 @@ export function TournamentStats () {
 
 }
 
-async function getBattingStats (tournamentTypeID: number, qualifierValue: number, positions: 'ANY'|Position[], tournamentStartDate: string, tournamentEndDate: string) {
+async function getBattingStats (tournamentTypeID: number, qualifierValue: number, positions: 'ANY'|Position[], tournamentStartDate: string, tournamentEndDate: string, teamName?: string) {
 
     const response = await window.electronAPI.getTournamentBattingStats({
         TournamentTypeID: tournamentTypeID, 
@@ -114,20 +117,22 @@ async function getBattingStats (tournamentTypeID: number, qualifierValue: number
         TournamentTimeRange: {
             StartDate:tournamentStartDate,
             EndDate:tournamentEndDate
-        }
+        },
+        TeamName: teamName,
     });
     return response;
 
 }
 
-async function getPitchingStats (tournamentTypeID: number, qualifierValue: number, tournamentStartDate: string, tournamentEndDate: string) {
+async function getPitchingStats (tournamentTypeID: number, qualifierValue: number, tournamentStartDate: string, tournamentEndDate: string, teamName?: string) {
 
     const response = await window.electronAPI.getTournamentPitchingStats({
         TournamentTypeID: tournamentTypeID, 
         TournamentTimeRange: {
             StartDate:tournamentStartDate,
             EndDate:tournamentEndDate
-        }
+        },
+        TeamName: teamName,
     });
     return response;
 

@@ -6,5 +6,6 @@ export interface BattingStatsFilter {
     TournamentTimeRange?: {
         StartDate: string,
         EndDate: string,
-    } 
+    }
+    TeamName?: string, 
 }

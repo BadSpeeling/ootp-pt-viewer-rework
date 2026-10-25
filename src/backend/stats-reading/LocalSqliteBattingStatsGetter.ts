@@ -55,6 +55,7 @@ from (
 	join StatsBatch sb on bs.StatsBatchID = sb.StatsBatchID
     where TournamentTypeID = ${filter.TournamentTypeID}
     ${filter.TournamentTimeRange ? `AND (UNIXEPOCH(TournamentStartDate) >= UNIXEPOCH('${filter.TournamentTimeRange.StartDate}') AND UNIXEPOCH(TournamentStartDate) <= UNIXEPOCH('${filter.TournamentTimeRange.EndDate}'))` : ""}
+    ${filter.TeamName ? `AND bs.TeamName = '${filter.TeamName}'` : ""}
     group by bs.PtCardID
 ) SummedStats
 join PtCard c on SummedStats.PtCardID = c.PtCardID
