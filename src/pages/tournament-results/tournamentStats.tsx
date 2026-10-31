@@ -194,7 +194,7 @@ function getHeaders (statsType: StatsType) {
             { name: 'Card Title', selector: r => r.CardTitle, width: '300px', minWidth: '120px' },
             { name: 'Card Value', selector: r => r.CardValue, },
             { name: 'Throws', selector: r => r.Throws, },
-            { name: 'G', selector: r => r.G, },
+            { name: 'G', selector: r => r.G, sortable: true },
             { name: 'GS', selector: r => r.GS, sortable: true },
             { name: 'K/9', selector: r => r["K/9"], },
             { name: 'BB/9', selector: r => r["BB/9"], },
