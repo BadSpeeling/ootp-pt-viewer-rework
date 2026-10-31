@@ -59,6 +59,7 @@ from (
     group by bs.PtCardID
 ) SummedStats
 join PtCard c on SummedStats.PtCardID = c.PtCardID
+order by SummedStats.PA DESC
     `
     }
 
