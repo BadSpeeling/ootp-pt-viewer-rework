@@ -27,7 +27,9 @@ FROM (
 		SELECT StatsBatchID, TournamentTypeID
 		FROM StatsBatch
 		WHERE 1=1
-		AND unixepoch(TournamentStartDate) >= unixepoch('${query.Timeframe?.StartDate}')
+		${query.Timeframe ? `AND unixepoch(TournamentStartDate) >= unixepoch('${query.Timeframe?.StartDate}')` : ""}
+		${query.TournamentTypeID ? `AND TournamentTypeID = ${query.TournamentTypeID}` : ""}		
+		ORDER BY UNIXEPOCH(TournamentStartDate) DESC, TournamentTypeID
 		${query.TournamentCount ? "LIMIT " + query.TournamentCount : ""}
 	) sb
 	JOIN PitchingStats ps on sb.StatsBatchID = ps.StatsBatchID
@@ -37,8 +39,8 @@ FROM (
 	GROUP BY sb.StatsBatchID, ps.TeamName, sb.TournamentTypeID
 ) r
 JOIN TournamentType tt on r.TournamentTypeID = tt.TournamentTypeID
-JOIN StatsBatch sb on r.StatsBatchID = sb.StatsBatchID
-ORDER BY UNIXEPOCH(TournamentStartDate) DESC, TournamentTypeID        
+JOIN StatsBatch sb on r.StatsBatchID = sb.StatsBatchID      
+ORDER BY UNIXEPOCH(TournamentStartDate) DESC, TournamentTypeID  
 `
     }
 

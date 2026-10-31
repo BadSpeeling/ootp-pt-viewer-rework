@@ -6,8 +6,9 @@ import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
 import { Bats, Throws, Position, StatsType } from "../../backend/types";
 import { TournamentTypePicker } from "../tournamentTypePicker";
-import { TournamentBattingStats, TournamentPitchingStats, TournamentType, } from '../../userInterfaceTypes'
+import { TournamentBattingStats, TournamentPitchingStats, TournamentResult, TournamentType, } from '../../userInterfaceTypes'
 import { TournamentDatePicker } from "../tournamentDatePicker";
+import { TournamentRecordResults } from "./tournamentRecordResults";
 
 export function TournamentStats () {
 
@@ -22,6 +23,7 @@ export function TournamentStats () {
     const [positions, setPositions] = React.useState([] as string[])
     const [tournamentStartDate, setTournamentStartDate] = React.useState('1970-01-01');
     const [tournamentEndDate, setTournamentEndDate] = React.useState('2099-01-01');
+    const [recentTournamentResults, setRecentTournamentResults] = React.useState([] as TournamentResult[]);
 
     const columns = getHeaders(statsTypeID);
 
@@ -33,10 +35,39 @@ export function TournamentStats () {
             setTournamentTypes(tournamentTypes);
 
         }
-
+        
         getTournamentTypes();
 
     }, []);
+
+    React.useEffect(() => {
+
+        if (selectedTournamentType) {
+        
+            getRecentTournamentResults(selectedTournamentType!.TournamentTypeID);
+            setBattingStats([]);
+            setPitchingStats([]);
+
+        }
+
+    }, [selectedTournamentType]);
+
+    const getRecentTournamentResults = async (tournamentTypeID: number) => {
+
+        const currDate = new Date();
+        currDate.setDate(currDate.getDate() - 7);
+
+        const recentTournamentResults = await window.electronAPI.getTournamentResults({
+            TeamName: "Lil Dicky",
+            Timeframe: {
+                StartDate: currDate.toISOString().slice(0, 10),
+                EndDate: '2099-12-31',
+            },
+            TournamentTypeID: tournamentTypeID,
+        });
+        setRecentTournamentResults(recentTournamentResults);
+
+    };
 
     const dataLoadHandler = async () => {
 
@@ -53,7 +84,6 @@ export function TournamentStats () {
             setPitchingStats(statsResult);
         }
 
-
     }
     
     const setPositionsHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -63,46 +93,51 @@ export function TournamentStats () {
 
     return (
         <>
-            <div className="m-4">
-                <div>Data for team: <input value={teamName} onChange={(e) => setTeamName(e.target.value)} /></div>
+            <div>
                 <div className="mb-2"><TournamentTypePicker selectedTournamentType={selectedTournamentType} setSelectedTournamentType={setSelectedTournamentType} tournaments={tournamentTypes}/></div>
-                <div className="mb-2"><TournamentDatePicker tournamentStartDate={tournamentStartDate} setTournamentStartDate={setTournamentStartDate} tournamentEndDate={tournamentEndDate} setTournamentEndDate={setTournamentEndDate}/></div>
-                <div className="mb-2">
-                    <select className="border-gray border-1 rounded-md" value={statsTypeID} onChange={(e) => setStatsType(parseInt(e.target.value))}>
-                        <option value={StatsType.BATTING}>Batting</option>
-                        <option value={StatsType.PITCHING}>Pitching</option>
-                    </select>
-                </div>
-                <div className="mb-2">
-                    <select className="border-gray border-1 rounded-md" multiple value={positions.map(position => position.toString())} onChange={setPositionsHandler}>
-                        <option value={1}>P</option>
-                        <option value={2}>C</option>
-                        <option value={3}>1B</option>
-                        <option value={4}>2B</option>
-                        <option value={5}>3B</option>
-                        <option value={6}>SS</option>
-                        <option value={7}>LF</option>
-                        <option value={8}>CF</option>
-                        <option value={9}>RF</option>
-                        <option value={10}>DH</option>
-                    </select>
-                </div>
-                {/* <div>Min {getQualifierName(statsTypeID)} to qualify: <input className="border-gray border-1 rounded-md" value={qualifierValue} onChange={(e) => setQualifierValue(e.target.value)}/></div> */}
+                <TournamentRecordResults showTournamentName={false} tournamentResults={recentTournamentResults} />
             </div>
-            { 
-                (battingStats.length > 0 && statsTypeID === StatsType.BATTING) &&
+            <div>
                 <div className="m-4">
-                    <DataTable columns={columns as TableColumn<TournamentBattingStats>[]} data={battingStats} pagination />
+                    <div>Data for team: <input value={teamName} onChange={(e) => setTeamName(e.target.value)} /></div>
+                    <div className="mb-2"><TournamentDatePicker tournamentStartDate={tournamentStartDate} setTournamentStartDate={setTournamentStartDate} tournamentEndDate={tournamentEndDate} setTournamentEndDate={setTournamentEndDate}/></div>
+                    <div className="mb-2">
+                        <select className="border-gray border-1 rounded-md" value={statsTypeID} onChange={(e) => setStatsType(parseInt(e.target.value))}>
+                            <option value={StatsType.BATTING}>Batting</option>
+                            <option value={StatsType.PITCHING}>Pitching</option>
+                        </select>
+                    </div>
+                    <div className="mb-2">
+                        <select className="border-gray border-1 rounded-md" multiple value={positions.map(position => position.toString())} onChange={setPositionsHandler}>
+                            <option value={1}>P</option>
+                            <option value={2}>C</option>
+                            <option value={3}>1B</option>
+                            <option value={4}>2B</option>
+                            <option value={5}>3B</option>
+                            <option value={6}>SS</option>
+                            <option value={7}>LF</option>
+                            <option value={8}>CF</option>
+                            <option value={9}>RF</option>
+                            <option value={10}>DH</option>
+                        </select>
+                    </div>
+                    {/* <div>Min {getQualifierName(statsTypeID)} to qualify: <input className="border-gray border-1 rounded-md" value={qualifierValue} onChange={(e) => setQualifierValue(e.target.value)}/></div> */}
                 </div>
-            }
-            { 
-                (pitchingStats.length > 0 && statsTypeID === StatsType.PITCHING) &&
+                { 
+                    (battingStats.length > 0 && statsTypeID === StatsType.BATTING) &&
+                    <div className="m-4">
+                        <DataTable columns={columns as TableColumn<TournamentBattingStats>[]} data={battingStats} pagination />
+                    </div>
+                }
+                { 
+                    (pitchingStats.length > 0 && statsTypeID === StatsType.PITCHING) &&
+                    <div className="m-4">
+                        <DataTable columns={columns as TableColumn<TournamentPitchingStats>[]} data={pitchingStats} pagination />
+                    </div>
+                }
                 <div className="m-4">
-                    <DataTable columns={columns as TableColumn<TournamentPitchingStats>[]} data={pitchingStats} pagination />
+                    <button className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={dataLoadHandler}>Load</button>
                 </div>
-            }
-            <div className="m-4">
-                <button className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={dataLoadHandler}>Load</button>
             </div>
         </>
     )

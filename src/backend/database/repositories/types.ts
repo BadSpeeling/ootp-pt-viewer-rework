@@ -5,7 +5,7 @@ export interface CreateStatsBatchCommand {
 }
 
 export interface GetRecentTournamentResultsQuery {
-    TeamName?: string,
+    TeamName: string,
     Timeframe?: {
         StartDate: string,
         EndDate: string,

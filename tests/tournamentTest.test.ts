@@ -306,3 +306,130 @@ test('Exclude tournament outside of dates', async () => {
     expect(tournamentResult.TournamentStartDate === "2027-01-01").toBeTruthy();
 
 });
+
+test('Limit tournament counts', async () => {
+
+    const datatableModelReader = new ProjectJsonModelReader<DatatableModel>("tableColumns.json");
+    const db = await initializeDatabase(databaseFilePath, datatableModelReader);
+
+    const datatableModels = await datatableModelReader.getJsonModels()
+
+    const tournamentTypes: Partial<TournamentType>[] = [
+        {
+            TournamentTypeID: 1,          
+            Name: "Type 1",  
+        }
+    ]
+
+    const statsBatches: Partial<StatsBatch>[] = [
+        {
+            StatsBatchID: 1,
+            TournamentTypeID: 1,
+            TournamentStartDate: '2026-01-01'            
+        },
+        {
+            StatsBatchID: 2,
+            TournamentTypeID: 1,
+            TournamentStartDate: '2027-01-01'            
+        }
+    ]
+
+    const pitchingStats: Partial<PitchingStats>[] = [
+        {
+            PitchingStatsID: 1,
+            StatsBatchID: 1,
+            PtCardID: 1,
+            W: 0,
+            L: 1,
+            TeamName: "Lil Dicky"
+        },
+        {
+            PitchingStatsID: 2,
+            StatsBatchID: 2,
+            PtCardID: 1,
+            W: 0,
+            L: 1,
+            TeamName: "Lil Dicky"
+        }
+    ]
+
+    const dataInserter = new DataInserter(db, datatableModels);
+    await dataInserter.insertRawDataAsync(tournamentTypes, "TournamentType"); 
+    await dataInserter.insertRawDataAsync(statsBatches, "StatsBatch"); 
+    await dataInserter.insertRawDataAsync(pitchingStats, "PitchingStats");
+
+    const repo = new TournamentRepository(db);
+    const results = await repo.getRecentTournamentResultsAsync({
+        TeamName: "Lil Dicky",
+        TournamentCount: 1,
+    })
+
+    expect(results.length === 1).toBeTruthy();
+
+});
+
+test('Specific tournament type', async () => {
+
+    const datatableModelReader = new ProjectJsonModelReader<DatatableModel>("tableColumns.json");
+    const db = await initializeDatabase(databaseFilePath, datatableModelReader);
+
+    const datatableModels = await datatableModelReader.getJsonModels()
+
+    const tournamentTypes: Partial<TournamentType>[] = [
+        {
+            TournamentTypeID: 1,          
+            Name: "Type 1",  
+        },
+        {
+            TournamentTypeID: 2,          
+            Name: "Type 2",  
+        },
+    ]
+
+    const statsBatches: Partial<StatsBatch>[] = [
+        {
+            StatsBatchID: 1,
+            TournamentTypeID: 1,
+            TournamentStartDate: '2026-01-01'            
+        },
+        {
+            StatsBatchID: 2,
+            TournamentTypeID: 2,
+            TournamentStartDate: '2027-01-01'            
+        }
+    ]
+
+    const pitchingStats: Partial<PitchingStats>[] = [
+        {
+            PitchingStatsID: 1,
+            StatsBatchID: 1,
+            PtCardID: 1,
+            W: 0,
+            L: 1,
+            TeamName: "Lil Dicky"
+        },
+        {
+            PitchingStatsID: 2,
+            StatsBatchID: 2,
+            PtCardID: 1,
+            W: 0,
+            L: 1,
+            TeamName: "Lil Dicky"
+        }
+    ]
+
+    const dataInserter = new DataInserter(db, datatableModels);
+    await dataInserter.insertRawDataAsync(tournamentTypes, "TournamentType"); 
+    await dataInserter.insertRawDataAsync(statsBatches, "StatsBatch"); 
+    await dataInserter.insertRawDataAsync(pitchingStats, "PitchingStats");
+
+    const repo = new TournamentRepository(db);
+    const results = await repo.getRecentTournamentResultsAsync({
+        TeamName: "Lil Dicky",
+        TournamentTypeID: 1,
+    })
+
+    expect(results.length === 1).toBeTruthy();
+    expect(results[0].TournamentTypeID === 1);
+
+});
