@@ -8,38 +8,52 @@ import { DatabaseRecord } from '../types'
 
 export class Database {
 
+    db: sqlite.Database<sqlite3.Database, sqlite3.Statement> | null;
     databasePath: string[];
 
     constructor (databasePath: string[]) {
         this.databasePath = databasePath;
+        this.db = null;
     }
 
-    async #getConnection () {
-        return await sqlite.open({
+    async openConnection () {
+        this.db = await sqlite.open({
             filename: path.join(...this.databasePath),
             driver: sqlite3.Database
         });
     }
 
-    sanitize (sql: string) {
+    async closeConnection () {
+
+        if (!this.db) {
+            throw Error("Open the connection to the database!");
+        }
+
+        await this.db.close();
+
+    }
+
+    private sanitize (sql: string) {
         return sql.replaceAll('--','');
     }
 
     async execute (sql: string) {
     
-        const db = await this.#getConnection();
+        if (!this.db) {
+            throw Error("Open the connection to the database!");
+        }
 
-        await db.exec(this.sanitize(sql));
-        await db.close();
+        await this.db.exec(this.sanitize(sql));
         
     }
 
     async insertOne (sql: string): Promise<number> {
 
-        const db = await this.#getConnection();
+        if (!this.db) {
+            throw Error("Open the connection to the database!");
+        }
 
-        const result = await db.run(this.sanitize(sql));
-        await db.close();
+        const result = await this.db.run(this.sanitize(sql));
 
         if (typeof result.lastID !== 'number') {
             throw Error("Did not insert");
@@ -51,44 +65,44 @@ export class Database {
 
     async get (sql: string): Promise<DatabaseRecord> {
 
-        const db = await this.#getConnection();
+        if (!this.db) {
+            throw Error("Open the connection to the database!");
+        }
 
-        const result = await db.get(this.sanitize(sql));
-        await db.close();
-
+        const result = await this.db.get(this.sanitize(sql));
         return result;
 
     }
 
     async getMapped <T> (sql: string): Promise<T> {
 
-        const db = await this.#getConnection();
+        if (!this.db) {
+            throw Error("Open the connection to the database!");
+        }
 
-        const result = await db.get(this.sanitize(sql))
-        await db.close();
-
+        const result = await this.db.get(this.sanitize(sql))
         return result as T;
 
     }
 
     async getAll (sql: string): Promise<DatabaseRecord[]> {
 
-        const db = await this.#getConnection();
+        if (!this.db) {
+            throw Error("Open the connection to the database!");
+        }
 
-        const result = await db.all(this.sanitize(sql))
-        await db.close();
-
+        const result = await this.db.all(this.sanitize(sql))
         return result;
 
     }
 
     async getAllMapped <T> (sql: string): Promise<T[]> {
 
-        const db = await this.#getConnection();
+        if (!this.db) {
+            throw Error("Open the connection to the database!");
+        }
 
-        const result = await db.all(this.sanitize(sql))
-        await db.close();
-
+        const result = await this.db.all(this.sanitize(sql))
         return result.map((row) => row as T)
 
     }
