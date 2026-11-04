@@ -12,7 +12,9 @@ export class TournamentRepository extends Repository {
     public async getRecentTournamentResultsAsync (query: GetRecentTournamentResultsQuery) {
 
         const script = this.getRecentTournamentResultsScript(query);
+		await this.database.openConnection();
         const tournamentResults = await this.database.getAllMapped<TournamentResult>(script);
+		await this.database.closeConnection();
         return tournamentResults;
 
     }

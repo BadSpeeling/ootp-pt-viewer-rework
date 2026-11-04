@@ -20,7 +20,9 @@ export class LocalSqliteDatatableCreator implements IDatatableCreator {
         const createTableScripts = datatables.map((datatable) => datatable.createTableString());
 
         try {
+            await this.database.openConnection();
             await this.database.execute(createTableScripts.join(''));            
+            await this.database.closeConnection();
         }
         catch (error) {
             if (error instanceof Error) {

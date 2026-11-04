@@ -20,7 +20,9 @@ export class PtCardImporter {
 
         if (!liveUpdateOccuredFlag) {
             const ptCardListExportScript = scriptGenerator.getImportScript();
+            await this.database.openConnection();
             await this.database.execute(ptCardListExportScript);
+            await this.database.closeConnection();
             return ImportCardResult.SUCCESS;
         }
         else {
@@ -32,7 +34,9 @@ export class PtCardImporter {
     private didLiveUpdateOccurFlagAsync = async (generator: PtCardListExportScriptGenerator) => {
 
         const script  = generator.getCheckLiveUpdateScript();
+        await this.database.openConnection();
         const cardsLiveUpdateResult = await this.database.getAllMapped<{LiveUpdateOccured: boolean, CardID: number}>(script);
+        await this.database.closeConnection();
         return cardsLiveUpdateResult.filter(card => card.LiveUpdateOccured).length > 0;
 
     }

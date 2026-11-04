@@ -11,7 +11,9 @@ export class LiveUpdateRepository extends Repository {
     public async createLiveUpdate (effectiveDate: string) : Promise<LiveUpdate> {
 
         const liveUpdateInsertScript = this.getCreateLiveUpdateScript(effectiveDate);
+        await this.database.openConnection();
         const liveUpdateID = await this.database.insertOne(liveUpdateInsertScript);
+        await this.database.closeConnection();
 
         return {
             LiveUpdateID: liveUpdateID,

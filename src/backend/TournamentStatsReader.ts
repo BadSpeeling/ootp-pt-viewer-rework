@@ -31,10 +31,14 @@ export class TournamentStatsReader {
         const statsBatch = await statsBatchRepo.createStatsBatch(createStatsBatchCommand);
 
         const battingWriteScript =  new BattingExportScriptGenerator(stats.battingSplit, statsBatch.StatsBatchID).getExportWriteScript();
+        await database.openConnection();
         await database.execute(battingWriteScript);
+        await database.openConnection();
 
         const pitchingWriteScript =  new PitchingExportScriptGenerator(stats.pitchingSplit, statsBatch.StatsBatchID).getExportWriteScript();
+        await database.openConnection();
         await database.execute(pitchingWriteScript);
+        await database.openConnection();
 
         if (stats.fieldingSplit) console.log('Do the fielding write');
 
