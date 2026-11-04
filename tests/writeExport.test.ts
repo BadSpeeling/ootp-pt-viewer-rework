@@ -69,7 +69,9 @@ test('Read and write real OOTP27 pt_card_list file', async () => {
 
     expect(importResult === ImportCardResult.SUCCESS).toBeTruthy();
 
+    await db.openConnection();
     const result = await db.getAll("select * from PtCard")
+    await db.closeConnection();
     expect(result.length === 9).toBeTruthy();
 
     const result1 = result.find(r => r.CardID === 85352);
@@ -166,7 +168,9 @@ test('Succeed bc only new cards are non-live', async () => {
 
     expect(importResult === ImportCardResult.SUCCESS).toBeTruthy();
     
+    await db.openConnection();
     const currentPtCards = await db.getAllMapped<{cnt:number}>('select count(*) as cnt from PtCard')
+    await db.closeConnection();
     expect(currentPtCards[0].cnt === reader.getRowCount()).toBeTruthy();
 
 })
@@ -220,12 +224,16 @@ test('Read and write batting and pitching stats', async () => {
         TournamentStartDate: "2026-01-01"
     });
 
+    await db.openConnection();
     const battingStats = await db.getAll("SELECT * FROM BattingStats");
+    await db.closeConnection();
     expect(battingStats.length === 1).toBeTruthy();
     expect(battingStats[0].G === 3).toBeTruthy();
     expect(battingStats[0].PtCardID === 1).toBeTruthy();
 
+    await db.openConnection();
     const pitchingStats = await db.getAll("SELECT * FROM PitchingStats");
+    await db.closeConnection();
     expect(pitchingStats.length === 1).toBeTruthy();
     expect(pitchingStats[0].G === 2).toBeTruthy();
     expect(pitchingStats[0].PtCardID === 2).toBeTruthy();

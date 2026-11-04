@@ -63,7 +63,9 @@ export class DataInserter {
         `
 
         try {
+            await this.database.openConnection();
             await this.database.execute(insertScript);
+            await this.database.closeConnection();
         }
         catch (err) {
             

@@ -42,7 +42,9 @@ test('Create LiveUpdate handler', async () => {
 
     const liveUpdateResult = await createLiveUpdateHandlerAsync(db, '2026-01-01');
 
+    await db.openConnection();
     const liveUpdateDB = await db.getMapped<LiveUpdate>("select LiveUpdateID, EffectiveDate from LiveUpdate limit 1");
+    await db.closeConnection();
     expect(liveUpdateDB.LiveUpdateID === liveUpdateResult?.LiveUpdateID).toBeTruthy();
     expect(liveUpdateDB.EffectiveDate === liveUpdateResult?.EffectiveDate).toBeTruthy();
 
