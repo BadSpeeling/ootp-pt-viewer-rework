@@ -12,10 +12,14 @@ export class StatsBatchRepository extends Repository {
     public async createStatsBatch (command: CreateStatsBatchCommand) : Promise<StatsBatch> {
 
         const createStatsBatchScript = this.getCreateStatsBatchScript(command);
+        await this.database.openConnection();
         const statsBatchID = await this.database.insertOne(createStatsBatchScript);
+        await this.database.closeConnection();
 
         const getStatsBatchScript = this.getGetStatsBatchScript(statsBatchID);
+        await this.database.openConnection();
         const statsBatch = await this.database.getMapped<StatsBatch>(getStatsBatchScript);
+        await this.database.closeConnection();
 
         return statsBatch;            
 
