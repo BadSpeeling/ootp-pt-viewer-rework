@@ -14,7 +14,9 @@ export class LocalSqlitePitchingStatsGetter implements IPitchingStatsGetter {
     async getTournamentStatsAsync (pitchingStatsFilter: PitchingStatsFilter) {
         
         const pitchingStatsGetScript = this.getTournamentPitchingStatsScript(pitchingStatsFilter);
+        await this.database.openConnection();
         const unmappedPitchingStats = await this.database.getAll(pitchingStatsGetScript);
+        await this.database.closeConnection();
         const summedPitchingStats = this.mapTournamentStats(unmappedPitchingStats);
         return this.addRateStats(summedPitchingStats);
 

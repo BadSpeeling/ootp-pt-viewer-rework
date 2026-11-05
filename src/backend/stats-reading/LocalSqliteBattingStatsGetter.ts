@@ -14,7 +14,9 @@ export class LocalSqliteBattingStatsGetter implements IBattingStatsGetter {
     async getTournamentStatsAsync (battingStatsFilter: BattingStatsFilter) {
         
         const battingStatsGetScript = this.getTournamentBattingStatsScript(battingStatsFilter);
+        await this.database.openConnection();
         const unmappedBattingStats = await this.database.getAll(battingStatsGetScript);
+        await this.database.closeConnection();
         const summedBattingStats = this.mapTournamentStats(unmappedBattingStats);
         return this.addRateStats(summedBattingStats);
 
