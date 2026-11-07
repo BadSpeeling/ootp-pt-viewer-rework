@@ -37,6 +37,7 @@ export function Landing ({ setCurrentPage }: LandingProps) {
                 <div className="text-center flex-1 mr-4"><button className="w-full mx-8 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => setCurrentPage(CurrentPage.TOURNAMENT_STATS)}>Tournament Stats</button></div>
                 <div className="text-center flex-1 mr-4"><button className="w-full mx-8 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => setCurrentPage(CurrentPage.LANDING)}>Season Stats</button></div>
                 <div className="text-center flex-1 mr-4"><button className="w-full mx-8 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => setCurrentPage(CurrentPage.CARD_IMPORTER)}>Card Importer</button></div>
+                <div className="text-center flex-1 mr-4"><button className="w-full mx-8 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => setCurrentPage(CurrentPage.PT_ROSTER)}>PT Roster</button></div>
             </div>
             <TournamentRecordResults showTournamentName={true} tournamentResults={lastTournamentResults} />
         </div>

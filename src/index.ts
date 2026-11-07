@@ -1,14 +1,14 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
-import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult } from './userInterfaceTypes';
+import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult, PtCardRatings } from './userInterfaceTypes';
 import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
 import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState, ImportStatFileRequest } from './backend/types';
 import { ProjectJsonModelReader } from './backend/database-creator';
 import { PtCardImporter } from './backend/PtCardImporter';
 import { Database } from './backend/database/Database';
-import { createLiveUpdateHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
+import { createLiveUpdateHandlerAsync, getPtRosterHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
 import { PtFolderOperations } from './backend/PtFolderOperations';
@@ -33,7 +33,8 @@ declare global {
         clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
         getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
         getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => Promise<TournamentPitchingStats[]>,
-        getTournamentResults: (query: GetRecentTournamentResultsQuery) => Promise<TournamentResult[]>
+        getTournamentResults: (query: GetRecentTournamentResultsQuery) => Promise<TournamentResult[]>,
+        getPtRoster: () => Promise<PtCardRatings[]>
     }
 
 }
@@ -101,6 +102,7 @@ ipcMain.handle('clearPtDataFolder', clearPtDataFolder);
 ipcMain.handle('getTournamentBattingStats', getTournamentBattingStats);
 ipcMain.handle('getTournamentPitchingStats', getTournamentPitchingStats);
 ipcMain.handle('getTournamentResults', getTournamentResults);
+ipcMain.handle('getPtRoster', getPtRoster);
 
 function get () {
     return "Hello!";
@@ -250,6 +252,24 @@ async function getTournamentResults (e: IpcMainInvokeEvent, query: GetRecentTour
         return [];
     }
 
+}
+
+async function getPtRoster () {
+    try {
+
+        const ptRosterModelReader = new ProjectJsonModelReader<OotpExportDataColumn>("ptRoster.json")
+		    const ptRosterModel = await ptRosterModelReader.getJsonModels();
+
+        const ptRosterReader = new OotpCsvExportReader(ptRosterModel, settings.ptRosterExportFilePath);
+        const ptRoster = await ptRosterReader.readExport();
+
+        return await getPtRosterHandlerAsync(getDatabase(), ptRoster);
+
+    }
+    catch (err) {
+        //TODO: log
+        return [];
+    }
 }
 
 const getDatabase = () => {

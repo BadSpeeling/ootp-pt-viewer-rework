@@ -18,5 +18,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
     getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => ipcRenderer.invoke('getTournamentBattingStats', battingStatsFilter),
     getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => ipcRenderer.invoke('getTournamentPitchingStats', pitchingStatsFilter),
     getTournamentResults: (query: GetRecentTournamentResultsQuery) => ipcRenderer.invoke('getTournamentResults', query),
+    getPtRoster: () => ipcRenderer.invoke('getPtRoster'),
 
 });
