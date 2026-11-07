@@ -1,0 +1,46 @@
+{
+    "ootpRoot": [
+        "C:",
+        "Users",
+        "ericf",
+        "OneDrive",
+        "Documents",
+        "Out of the Park Developments",
+        "OOTP Baseball 27"
+    ],
+    "ptCardFile": [
+        "online_data",
+        "pt_card_list.csv"
+    ],
+    "databasePath": [
+        "E:",
+        "ootp_data",
+        "sqlite",
+        "pt-2027.db"
+    ],
+    "leaguePlayTournamentID": 2,
+    "currentTeamName": "Lil Dicky",
+    "myTeamNames": [
+        "Lil Dicky",
+        "Fausto",
+        "Phollies"
+    ],
+    "logFilePath": [
+        "C:",
+        "Users",
+        "ericf",
+        "Documents",
+        "pt-viewer-log.txt"
+    ],
+    "ptRosterExportFilePath": [
+        "C:",
+        "Users",
+        "ericf",
+        "OneDrive",
+        "Documents",
+        "Out of the Park Developments",
+        "OOTP Baseball 27",
+        "online_data",
+        "collection_-_manage_cards_collection_-_manage_cards_export_40_man_roster.csv"
+    ]
+}
