@@ -52,7 +52,6 @@ export function PtRoster () {
 
     const [ptRoster, setPtRoster] = React.useState([] as PtCardRatings[]);
     const [positionCheckbox, setPositionCheckbox] = React.useState({
-        IsPCheckedFlag: false,
         IsCCheckedFlag: false,
         Is1BCheckedFlag: false,
         Is2BCheckedFlag: false,
@@ -91,7 +90,6 @@ export function PtRoster () {
     return (
         <>
             <div>
-                <input type="checkbox" checked={positionCheckbox.IsPCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsPCheckedFlag: e.target.checked})}}/> P
                 <input type="checkbox" checked={positionCheckbox.IsCCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsCCheckedFlag: e.target.checked})}}/> C
                 <input type="checkbox" checked={positionCheckbox.Is1BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is1BCheckedFlag: e.target.checked})}}/> 1B
                 <input type="checkbox" checked={positionCheckbox.Is2BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is2BCheckedFlag: e.target.checked})}}/> 2B
@@ -108,7 +106,6 @@ export function PtRoster () {
 }
 
 type PositionCheckbox = {
-    IsPCheckedFlag: boolean,
     IsCCheckedFlag: boolean,
     Is1BCheckedFlag: boolean,
     Is2BCheckedFlag: boolean,
