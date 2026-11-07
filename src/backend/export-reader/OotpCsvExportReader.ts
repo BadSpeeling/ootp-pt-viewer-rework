@@ -74,7 +74,12 @@ export class OotpCsvExportReader extends OotpExportReader {
     }
 
     private removeTrailingComma (line: string) {
-        return line.substring(0,line.length-1)
+        if (line.charAt(line.length-1) === ',') {
+            return line.substring(0,line.length-1)
+        }
+        else {
+            return line;
+        }
     }
 
 

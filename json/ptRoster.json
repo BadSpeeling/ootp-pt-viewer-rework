@@ -1,0 +1,4 @@
+[
+    {"nameInSource":"CID","databaseColumnName":"CardID","type":"INTEGER"},
+    {"nameInSource":"St","databaseColumnName":"CardStatus","type":"TEXT"}
+]
