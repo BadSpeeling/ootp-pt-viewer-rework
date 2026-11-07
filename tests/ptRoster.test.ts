@@ -8,8 +8,8 @@ import { initializeDatabase } from './util';
 import { LiveUpdate, PtCard } from '../src/backend/database/databaseTypes';
 import { DataInserter } from '../src/backend/database/DataInserter';
 import { OotpDataExport } from '../src/backend/export-stats';
-import { PtRosterRepository } from '../src/backend/database/repositories';
 
+import { getPtRosterHandlerAsync } from '../src/handlers'
 
 const databaseFilePath = ['E:','ootp_data','sqlite','test','pt_roster_test']
 
@@ -54,7 +54,7 @@ test('Load simple PT Roster test', async () => {
             CardType: 2,
             LiveUpdateID: 0,
             PtCardID: 1,
-            CardValue: 100
+            CardValue: 100            
         },
         {
             CardID: 2,
@@ -88,9 +88,7 @@ test('Load simple PT Roster test', async () => {
     ptRoster.addStatsRow(["1", "Active Roster"]);
     ptRoster.addStatsRow(["3", "Reserve Roster"]);
 
-    const repo = new PtRosterRepository(db, ptRoster);
-    const loadedPtRoster = await repo.loadPtRoster();
-
+    const loadedPtRoster = await getPtRosterHandlerAsync(db, ptRoster);
     expect(loadedPtRoster.length === 3).toBeTruthy();
 
 });
