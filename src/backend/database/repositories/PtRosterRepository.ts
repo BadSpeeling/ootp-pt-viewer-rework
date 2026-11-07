@@ -42,7 +42,45 @@ limit 1;
 
     private getPtCardRatings () {
         return `
-select case when t.CardStatus = 'Active Roster' then 0 when t.CardStatus = 'Reserve Roster' then 1 else 2 end CardStatus, CardTitle, pt.PtCardID, CardValue, Position, Bats, Throws, AvoidKs, BABIP, Gap, Power, Eye, Stuff, pHR, pBABIP, Control, Stamina, CatcherAbil, CatcherArm, CatcherFrame, InfieldArm, InfieldError, InfieldRange, OFRange, OFArm, OFError
+select 
+    case 
+        when t.CardStatus = 'Active Roster' then 0 
+        when t.CardStatus = 'Reserve Roster' then 1 
+        else 2 
+    end CardStatus, 
+    CardTitle, 
+    pt.PtCardID, 
+    CardValue, 
+    Position, 
+    Bats, 
+    Throws, 
+    AvoidKs, 
+    BABIP, 
+    Gap, 
+    Power, 
+    Eye, 
+    Stuff, 
+    pHR, 
+    pBABIP, 
+    Control, 
+    Stamina, 
+    CatcherAbil, 
+    CatcherArm, 
+    CatcherFrame, 
+    InfieldArm, 
+    InfieldError, 
+    InfieldRange, 
+    OFRange, 
+    OFArm, 
+    OFError,
+    LearnC,
+    Learn1B,
+    Learn2B,
+    Learn3B,
+    LearnSS,
+    LearnLF,
+    LearnCF,
+    LearnRF
 from PtCard pt
 join temp.latestLiveUpdate lu on pt.CardType != 1 or lu.LiveUpdateID = pt.LiveUpdateID
 left join temp.PtRoster t on pt.CardID = t.CardID        

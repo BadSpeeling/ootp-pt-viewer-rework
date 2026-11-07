@@ -41,4 +41,12 @@ export interface PtRosterResult {
     OFRange: number, 
     OFArm: number, 
     OFError: number,
+    LearnC: number,
+    Learn1B: number,
+    Learn2B: number,
+    Learn3B: number,
+    LearnSS: number,
+    LearnLF: number,
+    LearnCF: number,
+    LearnRF: number,
 }

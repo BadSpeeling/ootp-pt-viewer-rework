@@ -38,7 +38,7 @@ afterAll(() => {
 
 })
 
-test('Do not update because live update occured', async () => {
+test('Load simple PT Roster test', async () => {
 
     const datatableModelReader = new ProjectJsonModelReader<DatatableModel>("tableColumns.json");
     const ptRosterModelReader = new ProjectJsonModelReader<OotpExportDataColumn>("ptRoster.json");
