@@ -37,3 +37,10 @@ export const readFileAsync = (filePath: string[]) => {
     });            
     
 }
+
+export const writeLog = (filePath: string[], outputLine: string) => {
+
+    const appendedLine = `${new Date().toDateString()}: ${outputLine}\n`;
+    fs.appendFileSync(path.join(...filePath), appendedLine);
+
+}
