@@ -10,10 +10,22 @@ export class BattingExportScriptGenerator {
         this.statsBatchID = statsBatchID;
     }
 
-    getExportWriteScript() {
+    getExportWriteScript(filterTeamName: string | null) {
         
         const gamesIndex = this.cardData.getColumnIndex('G');
-        const dataFilter = (stats: string[][]) => stats.filter((r => r[gamesIndex] !== '' && r[gamesIndex] !== '0'))
+        const dataFilter = (stats: string[][]) => {
+        
+            const filteredByGames = stats.filter((r => r[gamesIndex] !== '' && r[gamesIndex] !== '0'))
+
+            if (filterTeamName) {
+                const teamIndex = this.cardData.getColumnIndex('TeamName');
+                return filteredByGames.filter(r => r[teamIndex] === filterTeamName);
+            }
+            else {
+                return filteredByGames;
+            }
+
+        }
 
         const script = `
 ${this.cardData.generateLoadExportedDataScript(dataFilter, 'BattingStats')}

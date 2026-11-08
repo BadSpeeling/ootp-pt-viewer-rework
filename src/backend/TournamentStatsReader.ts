@@ -25,17 +25,17 @@ export class TournamentStatsReader {
         battingSplit: OotpDataExport;
         pitchingSplit: OotpDataExport;
         fieldingSplit: OotpDataExport | undefined;
-    }, database: Database, createStatsBatchCommand: CreateStatsBatchCommand) {
+    }, database: Database, createStatsBatchCommand: CreateStatsBatchCommand, filterTeamName: string | null) {
 
         const statsBatchRepo = new StatsBatchRepository(database);
         const statsBatch = await statsBatchRepo.createStatsBatch(createStatsBatchCommand);
 
-        const battingWriteScript =  new BattingExportScriptGenerator(stats.battingSplit, statsBatch.StatsBatchID).getExportWriteScript();
+        const battingWriteScript =  new BattingExportScriptGenerator(stats.battingSplit, statsBatch.StatsBatchID).getExportWriteScript(filterTeamName);
         await database.openConnection();
         await database.execute(battingWriteScript);
         await database.openConnection();
 
-        const pitchingWriteScript =  new PitchingExportScriptGenerator(stats.pitchingSplit, statsBatch.StatsBatchID).getExportWriteScript();
+        const pitchingWriteScript =  new PitchingExportScriptGenerator(stats.pitchingSplit, statsBatch.StatsBatchID).getExportWriteScript(filterTeamName);
         await database.openConnection();
         await database.execute(pitchingWriteScript);
         await database.openConnection();

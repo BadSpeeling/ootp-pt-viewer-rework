@@ -222,7 +222,75 @@ test('Read and write batting and pitching stats', async () => {
         Description: 'test',
         TournamentTypeID: 1,
         TournamentStartDate: "2026-01-01"
-    });
+    }, null);
+
+    await db.openConnection();
+    const battingStats = await db.getAll("SELECT * FROM BattingStats");
+    await db.closeConnection();
+    expect(battingStats.length === 1).toBeTruthy();
+    expect(battingStats[0].G === 3).toBeTruthy();
+    expect(battingStats[0].PtCardID === 1).toBeTruthy();
+
+    await db.openConnection();
+    const pitchingStats = await db.getAll("SELECT * FROM PitchingStats");
+    await db.closeConnection();
+    expect(pitchingStats.length === 1).toBeTruthy();
+    expect(pitchingStats[0].G === 2).toBeTruthy();
+    expect(pitchingStats[0].PtCardID === 2).toBeTruthy();
+
+})
+
+test('Read and write batting and pitching stats for one team', async () => {
+
+    const datatableModelReader = new ProjectJsonModelReader<DatatableModel>("tableColumns.json");
+    const db = await initializeDatabase(databaseFilePath, datatableModelReader);
+
+    const datatableModels = await datatableModelReader.getJsonModels()
+
+    const liveUpdates: LiveUpdate[] = [
+        {
+            LiveUpdateID: 1,
+            EffectiveDate: '2026-01-01'
+        }
+    ]
+    const ptCards: PtCard[] = [
+        {
+            CardID: 1,
+            CardTitle: 'Bryce Harper',
+            CardType: 1,
+            LiveUpdateID: 1,
+            PtCardID: 1,
+            CardValue: 100
+        },
+        {
+            CardID: 2,
+            CardTitle: 'Cristopher Sanchez',
+            CardType: 1,
+            LiveUpdateID: 1,
+            PtCardID: 2,
+            CardValue: 100
+        }
+    ]
+    const tournamentTypes: TournamentType[] = [
+        {
+            TournamentTypeID: 1
+        }
+    ]
+
+    const dataInserter = new DataInserter(db, datatableModels);
+    await dataInserter.insertRawDataAsync(liveUpdates, "LiveUpdate");    
+    await dataInserter.insertRawDataAsync(ptCards, "PtCard");
+    await dataInserter.insertRawDataAsync(tournamentTypes, "TournamentType");
+
+    const stats = await TournamentStatsReader.getStats([process.cwd(), 'tests', 'data', 'tournament-filter-example.html']);
+    await TournamentStatsReader.writeStats(stats, db, {
+        Description: 'test',
+        TournamentTypeID: 1,
+        TournamentStartDate: "2026-01-01"
+    }, 'Lil Dicky');
+
+    expect(stats.battingSplit.recordCount() === 4).toBeTruthy();
+    expect(stats.pitchingSplit.recordCount() === 4).toBeTruthy();
 
     await db.openConnection();
     const battingStats = await db.getAll("SELECT * FROM BattingStats");

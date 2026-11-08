@@ -163,12 +163,13 @@ async function importTournamentFile (e: IpcMainInvokeEvent, request: ImportStatF
     const db = getDatabase();
 
     try {
+      const teamFilterName = request.onlyMyTeam ? settings.currentTeamName : null;
       const stats = await TournamentStatsReader.getStats(request.statsFilePath);
       await TournamentStatsReader.writeStats(stats, db, {
           Description: request.description,
           TournamentTypeID: request.tournamentTypeID,
           TournamentStartDate: request.tournamentStartDate
-      });
+      }, teamFilterName);
       await PtFolderOperations.deletePtDataFileAsync(request.statsFilePath);
     }
     catch (err) {

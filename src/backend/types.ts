@@ -400,6 +400,7 @@ export interface ImportStatFileRequest {
     description: string,
     tournamentTypeID: number,
     tournamentStartDate: string,
+    onlyMyTeam: boolean,
 }
 
 export interface TournamentType {
