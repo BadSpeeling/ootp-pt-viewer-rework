@@ -105,6 +105,7 @@ export function PtDataFiles ({ptDataFiles, setPtDataFiles}: PtDataFilesProps) {
                             statsFilePath: [...ptDataFile.filePath, ptDataFile.fileName],
                             tournamentStartDate: ptDataFile.tournamentStartDate,
                             tournamentTypeID: selectedTournamentType!.TournamentTypeID,
+                            onlyMyTeam: ptDataFile.onlyMyTeamFlag,
                         })
 
                         resolve(successFlag)
