@@ -1,8 +1,9 @@
 import React from 'react';
-import { PtCardRatings } from '../userInterfaceTypes'
+import { PtCardRatings, PtCardRosterStatus } from '../userInterfaceTypes'
 
 import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
+import { PtCard } from './ptCard';
 
 export function PtRoster () {
 
@@ -51,6 +52,7 @@ export function PtRoster () {
     }
 
     const [ptRoster, setPtRoster] = React.useState([] as PtCardRatings[]);
+    const [selectedPtCard, setSelectedPtCard] = React.useState(null as PtCardRatings | null);
     const [positionCheckbox, setPositionCheckbox] = React.useState({
         IsCCheckedFlag: false,
         Is1BCheckedFlag: false,
@@ -63,15 +65,15 @@ export function PtRoster () {
     } as PositionCheckbox)
 
     const columns: TableColumn<PtCardRatings>[] = [
-        { name: 'Card Title', selector: r => r.CardTitle, width: '400px', minWidth: '120px' },
-        { name: 'CardValue', selector: r => r.CardValue, sortable: true },
-        { name: 'Position', selector: r => r.Position, },
-        { name: 'Bats', selector: r => r.Bats, },
-        { name: 'Throws', selector: r => r.Throws, },
-        { name: 'Total Batting', selector: r => r.TotalBattingRating, sortable: true},
-        { name: 'On Base', selector: r => r.OnBaseRating, sortable: true},
-        { name: 'Slugging', selector: r => r.SluggingRating, sortable: true},
-        { name: 'TTO', selector: r => r.ThreeTrueRating, sortable: true},
+        { name: 'Card Title', cell: r => (r.CardStatus === PtCardRosterStatus.ACTIVE_ROSTER || r.CardStatus === PtCardRosterStatus.RESERVE_ROSTER) ? <b>{r.CardTitle}</b> : <div>{r.CardTitle}</div>, width: '30%' },
+        { name: 'OVR', selector: r => r.CardValue, width: '5%' },
+        { name: 'POS', selector: r => r.Position, width: '5%' },
+        { name: 'B', selector: r => r.Bats, width: '5%' },
+        { name: 'T', selector: r => r.Throws, width: '5%' },
+        { name: 'Total Batting', selector: r => r.TotalBattingRating, sortable: true, width:'12.5%'},
+        { name: 'On Base', selector: r => r.OnBaseRating, sortable: true, width:'12.5%'},
+        { name: 'Slugging', selector: r => r.SluggingRating, sortable: true, width:'12.5%'},
+        { name: 'TTO', selector: r => r.ThreeTrueRating, sortable: true, width:'12.5%'},
         ...getPositionColumns()
     ]; 
 
@@ -88,19 +90,26 @@ export function PtRoster () {
     });
 
     return (
-        <>
-            <div>
-                <input type="checkbox" checked={positionCheckbox.IsCCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsCCheckedFlag: e.target.checked})}}/> C
-                <input type="checkbox" checked={positionCheckbox.Is1BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is1BCheckedFlag: e.target.checked})}}/> 1B
-                <input type="checkbox" checked={positionCheckbox.Is2BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is2BCheckedFlag: e.target.checked})}}/> 2B
-                <input type="checkbox" checked={positionCheckbox.Is3BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is3BCheckedFlag: e.target.checked})}}/> 3B
-                <input type="checkbox" checked={positionCheckbox.IsSSCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsSSCheckedFlag: e.target.checked})}}/> SS
-                <input type="checkbox" checked={positionCheckbox.IsLFCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsLFCheckedFlag: e.target.checked})}}/> LF
-                <input type="checkbox" checked={positionCheckbox.IsCFCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsCFCheckedFlag: e.target.checked})}}/> CF
-                <input type="checkbox" checked={positionCheckbox.IsRFCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsRFCheckedFlag: e.target.checked})}}/> RF
+        <div>
+            <div style={{width:"1140px"}}>
+                <div>
+                    <input type="checkbox" checked={positionCheckbox.IsCCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsCCheckedFlag: e.target.checked})}}/> C
+                    <input type="checkbox" checked={positionCheckbox.Is1BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is1BCheckedFlag: e.target.checked})}}/> 1B
+                    <input type="checkbox" checked={positionCheckbox.Is2BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is2BCheckedFlag: e.target.checked})}}/> 2B
+                    <input type="checkbox" checked={positionCheckbox.Is3BCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, Is3BCheckedFlag: e.target.checked})}}/> 3B
+                    <input type="checkbox" checked={positionCheckbox.IsSSCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsSSCheckedFlag: e.target.checked})}}/> SS
+                    <input type="checkbox" checked={positionCheckbox.IsLFCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsLFCheckedFlag: e.target.checked})}}/> LF
+                    <input type="checkbox" checked={positionCheckbox.IsCFCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsCFCheckedFlag: e.target.checked})}}/> CF
+                    <input type="checkbox" checked={positionCheckbox.IsRFCheckedFlag} onChange={(e) => {setPositionCheckbox({...positionCheckbox, IsRFCheckedFlag: e.target.checked})}}/> RF
+                </div>
+                <DataTable columns={columns} data={filteredPtRoster} onRowClicked={(row, e) => {
+                    setSelectedPtCard(row);
+                }} pagination />
             </div>
-            <DataTable columns={columns} data={filteredPtRoster} pagination />
-        </>
+            {
+                selectedPtCard && <PtCard ptCard={selectedPtCard} />
+            }
+        </div>
     )
 
 }

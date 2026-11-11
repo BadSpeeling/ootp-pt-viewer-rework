@@ -71,7 +71,7 @@ export interface TournamentResult {
 }
 
 export interface PtCardRatings {
-    CardStatus: string, 
+    CardStatus: PtCardRosterStatus, 
     CardTitle: string, 
     PtCardID: number,
     CardValue: number, 
@@ -110,4 +110,8 @@ export interface PtCardRatings {
     RatingLF: number,
     RatingCF: number,
     RatingRF: number,
+}
+
+export enum PtCardRosterStatus {
+    ACTIVE_ROSTER,RESERVE_ROSTER,OFF_ROSTER,
 }

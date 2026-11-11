@@ -15,7 +15,7 @@ export interface GetRecentTournamentResultsQuery {
 }
 
 export interface PtRosterResult {
-    CardStatus: string, 
+    CardStatus: 0 | 1 | 2, 
     CardTitle: string, 
     PtCardID: number,
     CardValue: number, 
