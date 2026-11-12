@@ -4,6 +4,7 @@ import { PtCardRatings, PtCardRosterStatus } from '../userInterfaceTypes'
 import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
 import { PtCard } from './ptCard';
+import { Position, Bats, Throws } from '../backend/types'
 
 export function PtRoster () {
 
@@ -67,9 +68,9 @@ export function PtRoster () {
     const columns: TableColumn<PtCardRatings>[] = [
         { name: 'Card Title', cell: r => (r.CardStatus === PtCardRosterStatus.ACTIVE_ROSTER || r.CardStatus === PtCardRosterStatus.RESERVE_ROSTER) ? <b>{r.CardTitle}</b> : <div>{r.CardTitle}</div>, width: '30%' },
         { name: 'OVR', selector: r => r.CardValue, width: '5%' },
-        { name: 'POS', selector: r => r.Position, width: '5%' },
-        { name: 'B', selector: r => r.Bats, width: '5%' },
-        { name: 'T', selector: r => r.Throws, width: '5%' },
+        { name: 'POS', selector: r => Position[r.Position], width: '5%' },
+        { name: 'B', selector: r => Bats[r.Bats], width: '5%' },
+        { name: 'T', selector: r => Throws[r.Throws], width: '5%' },
         { name: 'Total Batting', selector: r => r.TotalBattingRating, sortable: true, width:'12.5%'},
         { name: 'On Base', selector: r => r.OnBaseRating, sortable: true, width:'12.5%'},
         { name: 'Slugging', selector: r => r.SluggingRating, sortable: true, width:'12.5%'},
@@ -88,6 +89,8 @@ export function PtRoster () {
         && (!positionCheckbox.IsCFCheckedFlag || r.RatingCF)
         && (!positionCheckbox.IsRFCheckedFlag || r.RatingRF)
     });
+
+    const myRoster = ptRoster.filter(r => r.CardStatus === PtCardRosterStatus.ACTIVE_ROSTER)
 
     return (
         <div>
@@ -108,6 +111,19 @@ export function PtRoster () {
             </div>
             {
                 selectedPtCard && <PtCard ptCard={selectedPtCard} />
+            }
+            {
+                myRoster
+                    .sort((a,b) => {
+                       
+                        if (a.Position != b.Position) {
+                            return a.Position - b.Position;
+                        }
+
+                        return b.CardValue - a.CardValue;
+
+                    })
+                    .map(myCard => <div>{myCard.CardTitle}</div>)
             }
         </div>
     )
