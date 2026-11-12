@@ -1,3 +1,5 @@
+import { Position, Bats, Throws } from './backend/types'
+
 export enum CurrentPage {
     LANDING,CARD_IMPORTER,STATS_IMPORTER,TOURNAMENT_STATS,PT_ROSTER
 }
@@ -75,9 +77,9 @@ export interface PtCardRatings {
     CardTitle: string, 
     PtCardID: number,
     CardValue: number, 
-    Position: string, 
-    Bats: string, 
-    Throws: string, 
+    Position: Position, 
+    Bats: Bats, 
+    Throws: Throws, 
     AvoidKs: number, 
     BABIP: number, 
     Gap: number, 

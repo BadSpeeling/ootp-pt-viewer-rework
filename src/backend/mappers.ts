@@ -23,9 +23,6 @@ export function mapPtRoster (allPtRoster: PtRosterResult[]): PtCardRatings[] {
     return allPtRoster.map(ptRoster => {
         return {
                 ...ptRoster,
-                Position: Position[ptRoster.Position as number],
-                Bats: Bats[ptRoster.Bats as number],
-                Throws: Throws[ptRoster.Throws as number],
                 TotalBattingRating: Math.floor(ptRoster.AvoidKs * 1.00 + ptRoster.BABIP * 1.00 + ptRoster.Gap * 1.00 + ptRoster.Power * 1.00 + ptRoster.Eye * 1.00),
                 OnBaseRating: Math.floor(ptRoster.AvoidKs * 1.00 + ptRoster.BABIP * 1.00 + ptRoster.Eye * 1.00),
                 SluggingRating: Math.floor(ptRoster.AvoidKs * 1.00 + ptRoster.BABIP * 0.95 + ptRoster.Gap * 0.80 + ptRoster.Power * 1.10),

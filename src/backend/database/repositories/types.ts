@@ -1,3 +1,6 @@
+import { Position, Bats, Throws } from "../../types";
+import { PtCardRosterStatus } from '../../../userInterfaceTypes'
+
 export interface CreateStatsBatchCommand {
     TournamentTypeID: number,
     Description: string,
@@ -15,13 +18,13 @@ export interface GetRecentTournamentResultsQuery {
 }
 
 export interface PtRosterResult {
-    CardStatus: 0 | 1 | 2, 
+    CardStatus: PtCardRosterStatus, 
     CardTitle: string, 
     PtCardID: number,
     CardValue: number, 
-    Position: number, 
-    Bats: number, 
-    Throws: number, 
+    Position: Position, 
+    Bats: Bats, 
+    Throws: Throws, 
     AvoidKs: number, 
     BABIP: number, 
     Gap: number, 
