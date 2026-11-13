@@ -2,13 +2,12 @@ import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
 import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult, PtCardRatings } from './userInterfaceTypes';
-import { getLiveUpdates } from './backend/ptCardOperations';
 import { OotpCsvExportReader } from './backend/export-reader';
 import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState, ImportStatFileRequest } from './backend/types';
 import { ProjectJsonModelReader } from './backend/database-creator';
 import { PtCardImporter } from './backend/PtCardImporter';
 import { Database } from './backend/database/Database';
-import { createLiveUpdateHandlerAsync, getPtRosterHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
+import { createLiveUpdateHandlerAsync, getLiveUpdatesHandlerAsync, getPtRosterHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
 import { PtFolderOperations } from './backend/PtFolderOperations';
@@ -24,7 +23,7 @@ declare global {
 
     interface ElectronAPI {
         get: () => string,
-        getLiveUpdates: () => Promise<LiveUpdate[]>,
+        getLiveUpdates: () => Promise<LiveUpdate[] | null>,
         importCards: () => Promise<ImportCardResult>,
 		    createLiveUpdate: (liveUpdateEffectiveDate: string) => Promise<LiveUpdate | null>,
         getExportedPtDataFiles: () => Promise<PtDataExportFile[]>,
@@ -108,8 +107,18 @@ function get () {
     return "Hello!";
 }
 
-async function getLiveUpdatesHandler (): Promise<LiveUpdate[]> {
-  return getLiveUpdates(settings.databasePath);
+async function getLiveUpdatesHandler (): Promise<LiveUpdate[] | null> {
+	try {
+
+		const db = getDatabase();
+		const liveUpdate = await getLiveUpdatesHandlerAsync(db);
+		return liveUpdate;
+
+	}
+	catch (err) {
+		//TODO: log error
+		return null;
+	}
 }
 
 async function importCardsHandler (): Promise<ImportCardResult> {

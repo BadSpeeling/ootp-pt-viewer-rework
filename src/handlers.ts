@@ -5,6 +5,15 @@ import { mapLiveUpdate, mapPtRoster, mapTournamentTypes } from './backend/mapper
 import { LiveUpdate, TournamentType, PtCardRatings } from './userInterfaceTypes';
 import { OotpDataExport } from "./backend/export-stats";
 
+export async function getLiveUpdatesHandlerAsync (database: Database): Promise<LiveUpdate[]> {
+
+	const liveUpdateRepo = new LiveUpdateRepository(database);
+	const liveUpdates = await liveUpdateRepo.getLiveUpdates();
+
+	return liveUpdates.map(lu => mapLiveUpdate(lu));
+
+}
+
 export async function createLiveUpdateHandlerAsync (database: Database, liveUpdateEffectiveDate: string): Promise<LiveUpdate> {
     
     const liveUpdateRepo = new LiveUpdateRepository(database);

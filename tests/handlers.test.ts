@@ -7,6 +7,7 @@ import { ProjectJsonModelReader } from '../src/backend/database-creator';
 import { DatatableModel, LiveUpdate, TournamentType } from '../src/backend/types';
 import { initializeDatabase } from './util';
 import { DataInserter } from '../src/backend/database/DataInserter';
+import { LiveUpdateRepository } from '../src/backend/database/repositories';
 
 const databaseFilePath = ['E:','ootp_data','sqlite','test','handlers']
 
@@ -33,6 +34,36 @@ afterAll(() => {
         }
     });
 
+})
+
+test('Get LiveUpdates handler', async () => {
+
+    const datatableModelReader = new ProjectJsonModelReader<DatatableModel>("tableColumns.json");
+    const db = await initializeDatabase(databaseFilePath, datatableModelReader);
+
+    const datatableModels = await datatableModelReader.getJsonModels()
+
+    const tournamentTypes: LiveUpdate[] = [
+        {
+            EffectiveDate: '2026-01-01',
+            LiveUpdateID: 1
+        },
+        {
+            EffectiveDate: '2026-02-01',
+            LiveUpdateID: 2
+        }
+    ]
+
+    const dataInserter = new DataInserter(db, datatableModels);
+    await dataInserter.insertRawDataAsync(tournamentTypes, "LiveUpdate");    
+
+    const repo = new LiveUpdateRepository(db);
+    const liveUpdates = await repo.getLiveUpdates();
+
+    expect(liveUpdates.length === 2).toBeTruthy();
+    expect(liveUpdates.find(lu => lu.LiveUpdateID === 1)?.EffectiveDate === '2026-01-01').toBeTruthy();
+    expect(liveUpdates.find(lu => lu.LiveUpdateID === 2)?.EffectiveDate === '2026-02-01').toBeTruthy();
+    
 })
 
 test('Create LiveUpdate handler', async () => {
