@@ -27,6 +27,7 @@ export function mapPtRoster (allPtRoster: PtRosterResult[]): PtCardRatings[] {
                 OnBaseRating: Math.floor(ptRoster.AvoidKs * 1.00 + ptRoster.BABIP * 1.00 + ptRoster.Eye * 1.00),
                 SluggingRating: Math.floor(ptRoster.AvoidKs * 1.00 + ptRoster.BABIP * 0.95 + ptRoster.Gap * 0.80 + ptRoster.Power * 1.10),
                 ThreeTrueRating: Math.floor(ptRoster.AvoidKs * 1.00 + ptRoster.Power * 1.00 + ptRoster.Eye * 1.00),
+                TotalPitchingRating: Math.floor(ptRoster.Stuff * 1.00 + ptRoster.pBABIP * 1.00 + ptRoster.pHR + ptRoster.Control * 1.00),
                 RatingC: ptRoster.LearnC ? Math.floor(ptRoster.CatcherFrame * 1.05 + ptRoster.CatcherArm * 1.00 + ptRoster.CatcherAbil * 0.95) : 0,
                 Rating1B: ptRoster.Learn1B ? Math.floor(ptRoster.InfieldRange * 1.00 + ptRoster.InfieldError * 1.00 + ptRoster.InfieldArm * 0.10 + ptRoster.DP * 0.25 + playerHeightValue(ptRoster.Height)) : 0,
                 Rating2B: ptRoster.Learn2B ? Math.floor(ptRoster.InfieldRange * 1.05 + ptRoster.InfieldError * 0.90 + ptRoster.InfieldArm * 0.80 + ptRoster.DP * 1.00) : 0,

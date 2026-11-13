@@ -101,6 +101,7 @@ export interface PtCardRatings {
     OFArm: number, 
     OFError: number,
     TotalBattingRating: number,
+    TotalPitchingRating: number,
     OnBaseRating: number,
     SluggingRating: number,
     ThreeTrueRating: number,
