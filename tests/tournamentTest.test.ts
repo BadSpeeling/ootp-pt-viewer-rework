@@ -6,8 +6,8 @@ import { ProjectJsonModelReader } from '../src/backend/database-creator'
 import { DatatableModel } from '../src/backend/types';
 import { initializeDatabase } from './util'
 import { DataInserter } from '../src/backend/database/DataInserter';
-import { TournamentRepository } from '../src/backend/database/repositories';
 import { PitchingStats, StatsBatch, TournamentType } from '../src/backend/database/DatabaseTypes';
+import { getRecentTournamentResultsHandlerAsync } from '../src/handlers';
 
 const databaseFilePath = ['E:','ootp_data','sqlite','test','tournament-tests']
 
@@ -98,17 +98,16 @@ test('Recent Tournament Result Query', async () => {
     await dataInserter.insertRawDataAsync(statsBatches, "StatsBatch"); 
     await dataInserter.insertRawDataAsync(pitchingStats, "PitchingStats");
 
-    const repo = new TournamentRepository(db);
-    const results = await repo.getRecentTournamentResultsAsync({
+    const results = await getRecentTournamentResultsHandlerAsync(db, {
         TeamName: "Lil Dicky",
         TournamentCount: 50,
         TournamentTypeID: 1,
         Timeframe: {
             StartDate: '2026-01-01',
             EndDate: '2099-12-31',
-        },
-    })
-
+        }
+    });
+    
     expect(results.length === 1).toBeTruthy();
     const tournamentResult = results[0];
     expect(tournamentResult.W === 4).toBeTruthy();
@@ -190,15 +189,14 @@ test('Multiple tournaments', async () => {
     await dataInserter.insertRawDataAsync(statsBatches, "StatsBatch"); 
     await dataInserter.insertRawDataAsync(pitchingStats, "PitchingStats");
 
-    const repo = new TournamentRepository(db);
-    const results = await repo.getRecentTournamentResultsAsync({
+    const results = await getRecentTournamentResultsHandlerAsync(db, {
         TeamName: "Lil Dicky",
         TournamentCount: 50,
         Timeframe: {
             StartDate: '2026-01-01',
             EndDate: '2099-12-31',
-        },
-    })
+        }
+    });
 
     expect(results.length === 2).toBeTruthy();
 
@@ -285,15 +283,14 @@ test('Exclude tournament outside of dates', async () => {
     await dataInserter.insertRawDataAsync(statsBatches, "StatsBatch"); 
     await dataInserter.insertRawDataAsync(pitchingStats, "PitchingStats");
 
-    const repo = new TournamentRepository(db);
-    const results = await repo.getRecentTournamentResultsAsync({
+    const results = await getRecentTournamentResultsHandlerAsync(db, {
         TeamName: "Lil Dicky",
         TournamentCount: 50,
         Timeframe: {
             StartDate: '2026-12-31',
             EndDate: '2099-12-31',
         },
-    })
+    });
 
     expect(results.length === 1).toBeTruthy();
 
@@ -358,11 +355,10 @@ test('Limit tournament counts', async () => {
     await dataInserter.insertRawDataAsync(statsBatches, "StatsBatch"); 
     await dataInserter.insertRawDataAsync(pitchingStats, "PitchingStats");
 
-    const repo = new TournamentRepository(db);
-    const results = await repo.getRecentTournamentResultsAsync({
+    const results = await getRecentTournamentResultsHandlerAsync(db, {
         TeamName: "Lil Dicky",
         TournamentCount: 1,
-    })
+    });
 
     expect(results.length === 1).toBeTruthy();
 
@@ -423,11 +419,10 @@ test('Specific tournament type', async () => {
     await dataInserter.insertRawDataAsync(statsBatches, "StatsBatch"); 
     await dataInserter.insertRawDataAsync(pitchingStats, "PitchingStats");
 
-    const repo = new TournamentRepository(db);
-    const results = await repo.getRecentTournamentResultsAsync({
+    const results = await getRecentTournamentResultsHandlerAsync(db, {
         TeamName: "Lil Dicky",
         TournamentTypeID: 1,
-    })
+    });
 
     expect(results.length === 1).toBeTruthy();
     expect(results[0].TournamentTypeID === 1);
