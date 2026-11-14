@@ -1,19 +1,24 @@
 import { app, BrowserWindow, ipcMain, IpcMainInvokeEvent } from 'electron';
 import * as settings from '../settings.json';
 
-import { LiveUpdate, ImportCardResult, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult, PtCardRatings } from './userInterfaceTypes';
-import { OotpCsvExportReader } from './backend/export-reader';
-import { OotpExportDataColumn, DatatableModel, PtDataExportFile, PtDataExportState, ImportStatFileRequest } from './backend/types';
-import { ProjectJsonModelReader } from './backend/database-creator';
-import { PtCardImporter } from './backend/PtCardImporter';
+import { OotpExportDataColumn, PtDataExportFile, ImportStatFileRequest } from './backend/types';
+import { PtDataExportState, ImportCardResult } from './backend/enums'
+
 import { Database } from './backend/database/Database';
-import { createLiveUpdateHandlerAsync, getLiveUpdatesHandlerAsync, getPtRosterHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
+import { GetRecentTournamentResultsQuery } from './backend/database/repositories/types';
+
+import { LiveUpdate, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult, PtCardRatings } from './userInterfaceTypes';
+
+import { OotpCsvExportReader } from './backend/export-reader';
+import { ProjectJsonModelReader } from './backend/database-creator';
+import { BattingStatsFilter, IBattingStatsGetter, IPitchingStatsGetter, LocalSqliteBattingStatsGetter, LocalSqlitePitchingStatsGetter, PitchingStatsFilter } from './backend/stats-reading';
+
+import { createLiveUpdateHandlerAsync, getLiveUpdatesHandlerAsync, getPtRosterHandlerAsync, getRecentTournamentResultsHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
+
+import { PtCardImporter } from './backend/PtCardImporter';
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
 import { TournamentStatsReader } from './backend/TournamentStatsReader';
 import { PtFolderOperations } from './backend/PtFolderOperations';
-import { BattingStatsFilter, IBattingStatsGetter, IPitchingStatsGetter, LocalSqliteBattingStatsGetter, LocalSqlitePitchingStatsGetter, PitchingStatsFilter } from './backend/stats-reading';
-import { GetRecentTournamentResultsQuery } from './backend/database/repositories/types';
-import { TournamentRepository } from './backend/database/repositories';
 
 declare global {
     
@@ -253,9 +258,11 @@ async function getTournamentPitchingStats (e: IpcMainInvokeEvent, filter: Pitchi
 async function getTournamentResults (e: IpcMainInvokeEvent, query: GetRecentTournamentResultsQuery) {
 
     try {
-        const repo = new TournamentRepository(getDatabase());
-        const tournamentResults = await repo.getRecentTournamentResultsAsync(query);
-        return tournamentResults;
+
+        const db = getDatabase();
+        const tournaments = await getRecentTournamentResultsHandlerAsync(db, query);
+        return tournaments;
+
     }
     catch (err) {
         //TODO: log

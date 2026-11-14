@@ -6,7 +6,7 @@ import { ProjectJsonModelReader } from '../src/backend/database-creator'
 import { DatatableModel, OotpExportDataColumn } from '../src/backend/types';
 
 import { PtCardImporter } from '../src/backend/PtCardImporter';
-import { ImportCardResult } from '../src/userInterfaceTypes';
+import { ImportCardResult } from '../src/backend/enums';
 
 import { initializeDatabase } from './util'
 import { FakeOneCardLiveUpdateReader, FakeOnlyNonLiveUpdateReader } from './fakes/OotpExportReader';

@@ -1,7 +1,8 @@
 import { PitchingStatsFilter, IPitchingStatsGetter } from ".";
 import { Database } from "../database/Database";
 import { TournamentPitchingStats } from "../../userInterfaceTypes";
-import { DatabaseRecord, Throws, TournamentPitchingStatsSum } from "../types";
+import { DatabaseRecord, TournamentPitchingStatsSum } from "../types";
+import { Throws } from '../enums';
 
 export class LocalSqlitePitchingStatsGetter implements IPitchingStatsGetter {
     

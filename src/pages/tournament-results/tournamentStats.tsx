@@ -4,9 +4,8 @@ import { toast } from 'react-toastify';
 
 import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
-import { Bats, Throws, Position, StatsType } from "../../backend/types";
 import { TournamentTypePicker } from "../tournamentTypePicker";
-import { TournamentBattingStats, TournamentPitchingStats, TournamentResult, TournamentType, } from '../../userInterfaceTypes'
+import { TournamentBattingStats, TournamentPitchingStats, TournamentResult, TournamentType, Position, StatsType} from '../../userInterfaceTypes'
 import { TournamentDatePicker } from "../tournamentDatePicker";
 import { TournamentRecordResults } from "./tournamentRecordResults";
 

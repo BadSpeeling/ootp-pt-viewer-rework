@@ -1,11 +1,9 @@
-import { Position, Bats, Throws } from './backend/types'
+import { Position, Bats, Throws, PtCardRosterStatus } from './backend/enums'
+
+export { PtCardRosterStatus, ImportCardResult, Position, Bats, Throws, StatsType, PtDataExportState } from './backend/enums'
 
 export enum CurrentPage {
     LANDING,CARD_IMPORTER,STATS_IMPORTER,TOURNAMENT_STATS,PT_ROSTER
-}
-
-export enum ImportCardResult {
-    SUCCESS,FAIL,LIVE_UPDATE_NEEDED
 }
 
 export interface LiveUpdate {
@@ -113,8 +111,4 @@ export interface PtCardRatings {
     RatingLF: number,
     RatingCF: number,
     RatingRF: number,
-}
-
-export enum PtCardRosterStatus {
-    ACTIVE_ROSTER,RESERVE_ROSTER,OFF_ROSTER,
 }

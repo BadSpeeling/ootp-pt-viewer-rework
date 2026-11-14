@@ -1,6 +1,4 @@
-export interface CsvRecord {
-    [index:string]: string|number,
-}
+import { PtDataExportState } from './enums'
 
 export interface DatabaseRecord {
     [index:string]: string|number,
@@ -74,30 +72,6 @@ export interface TournamentPitchingStatsSum {
     Outs: number,
 }
 
-export enum Bats {
-    R = 1,
-    L = 2,
-    S = 3,
-}
-
-export enum Throws {
-    R = 1,
-    L = 2,
-}
-
-export enum Position {
-    P = 1,
-    C = 2,
-    '1B' = 3,
-    '2B' = 4,
-    '3B' = 5,
-    SS = 6,
-    LF = 7,
-    CF = 8,
-    RF = 9,
-    DH = 10,
-}
-
 export interface PtDataExportFile {
     exportState:PtDataExportState,
     ptFolderPath:string[],
@@ -106,18 +80,10 @@ export interface PtDataExportFile {
     ptDataFolderPath:string[],
 }
 
-export enum PtDataExportState {
-    READY_TO_READ,NO_OUTPUT_FILES,MULTIPLE_OUTPUT_FILES,ERROR
-}
-
 export interface ImportStatFileRequest {
     statsFilePath: string[],
     description: string,
     tournamentTypeID: number,
     tournamentStartDate: string,
     onlyMyTeam: boolean,
-}
-
-export enum StatsType {
-    BATTING,PITCHING,FIELDING,
 }

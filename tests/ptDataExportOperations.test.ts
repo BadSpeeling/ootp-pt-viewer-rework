@@ -3,7 +3,7 @@ import * as fs from 'node:fs'
 import * as path from 'node:path';
 
 import { PtFolderSearcher } from '../src/backend/PtFolderSearcher'
-import { PtDataExportState } from '../src/backend/types';
+import { PtDataExportState } from '../src/backend/enums';
 import { PtFolderOperations } from '../src/backend/PtFolderOperations';
 
 const testPtFolderRoot = ['E:','ootp_data','pt_folder_test'];

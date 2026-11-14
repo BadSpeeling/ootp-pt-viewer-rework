@@ -1,7 +1,8 @@
 import * as path from 'node:path';
 import * as fs from 'node:fs';
 
-import { PtDataExportState, PtDataExportFile } from './types';
+import { PtDataExportFile } from './types';
+import { PtDataExportState } from './enums'
 
 export class PtFolderSearcher {
 

@@ -1,10 +1,9 @@
 import React from 'react';
-import { PtCardRatings, PtCardRosterStatus } from '../userInterfaceTypes'
 
 import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
 import { PtCard } from './ptCard';
-import { Position, Bats, Throws, StatsType } from '../backend/types'
+import { Position, Bats, Throws, StatsType, PtCardRatings, PtCardRosterStatus } from '../userInterfaceTypes'
 
 export function PtRoster () {
 

@@ -1,5 +1,4 @@
-import { Position, Bats, Throws } from "../../types";
-import { PtCardRosterStatus } from '../../../userInterfaceTypes'
+import { Position, Bats, Throws, PtCardRosterStatus } from "../../enums";
 
 export interface CreateStatsBatchCommand {
     TournamentTypeID: number,

@@ -1,6 +1,5 @@
 import * as React from "react";
-import { PtDataExportState } from "../../backend/types";
-import { PtDataFolder, PtDataFile, TournamentFolderImportStatus } from '../../userInterfaceTypes'
+import { PtDataFolder, PtDataFile, TournamentFolderImportStatus, PtDataExportState } from '../../userInterfaceTypes'
 import { PtDataFiles } from "./ptDataFiles";
 import { PtDataFolders } from "./ptDataFolders";
 
