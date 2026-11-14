@@ -1,6 +1,5 @@
 import { DatatableModel } from "../types";
 import { Database } from "./Database";
-import { DataInserterType } from "./DatabaseTypes";
 import { getValue } from './utils'
 
 export class DataInserter {

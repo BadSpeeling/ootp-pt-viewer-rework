@@ -1,4 +1,4 @@
-import { Bats, LiveUpdate, Position, Throws, TournamentType } from './types';
+import { LiveUpdate, TournamentType } from './database/DatabaseTypes';
 import { LiveUpdate as LiveUpdateUI, TournamentType as TournamentTypeUI, PtCardRatings } from '../userInterfaceTypes';
 import { PtRosterResult } from './database/repositories/types';
 

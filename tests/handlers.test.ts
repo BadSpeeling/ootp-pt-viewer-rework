@@ -4,7 +4,8 @@ import * as path from 'node:path';
 
 import { createLiveUpdateHandlerAsync, getTournamentTypesHandlerAsync } from '../src/handlers'
 import { ProjectJsonModelReader } from '../src/backend/database-creator';
-import { DatatableModel, LiveUpdate, TournamentType } from '../src/backend/types';
+import { DatatableModel } from '../src/backend/types';
+import { LiveUpdate, TournamentType } from '../src/backend/database/DatabaseTypes'
 import { initializeDatabase } from './util';
 import { DataInserter } from '../src/backend/database/DataInserter';
 import { LiveUpdateRepository } from '../src/backend/database/repositories';
@@ -94,9 +95,9 @@ test('Get Tournaments handler', async () => {
             Name: 'Test Tournament',
             CardRestriction: 'None',
             MaxOverall: 100,
-            IsQuick: false,
-            IsCap: false,
-            IsLive: false,
+            IsQuick: 0,
+            IsCap: 0,
+            IsLive: 0,
             CapAmount: 1000
         },
         {
@@ -104,9 +105,9 @@ test('Get Tournaments handler', async () => {
             Name: 'Other Test Tournament',
             CardRestriction: 'None',
             MaxOverall: 100,
-            IsQuick: false,
-            IsCap: false,
-            IsLive: false,
+            IsQuick: 0,
+            IsCap: 0,
+            IsLive: 0,
             CapAmount: 1000
         }
     ]

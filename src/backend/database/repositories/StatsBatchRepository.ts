@@ -1,4 +1,4 @@
-import { StatsBatch } from "../../types";
+import { StatsBatch } from "../DatabaseTypes";
 import { Database } from "../Database";
 import { Repository } from "./Repository";
 import { CreateStatsBatchCommand } from "./types";

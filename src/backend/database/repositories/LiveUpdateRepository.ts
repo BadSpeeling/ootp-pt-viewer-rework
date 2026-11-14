@@ -1,4 +1,4 @@
-import { LiveUpdate } from "../../types";
+import { LiveUpdate } from "../DatabaseTypes";
 import { Database } from "../Database";
 import { Repository } from "./Repository";
 

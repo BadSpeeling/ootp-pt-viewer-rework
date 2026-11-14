@@ -11,7 +11,7 @@ import { ImportCardResult } from '../src/userInterfaceTypes';
 import { initializeDatabase } from './util'
 import { FakeOneCardLiveUpdateReader, FakeOnlyNonLiveUpdateReader } from './fakes/OotpExportReader';
 import { OotpCsvExportReader } from '../src/backend/export-reader';
-import { LiveUpdate, PtCard, TournamentType } from '../src/backend/database/databaseTypes';
+import { LiveUpdate, PtCard, TournamentType } from '../src/backend/database/DatabaseTypes';
 import { DataInserter } from '../src/backend/database/DataInserter';
 
 import { TournamentStatsReader } from '../src/backend/TournamentStatsReader'
@@ -100,7 +100,7 @@ test('Do not update because live update occured', async () => {
             EffectiveDate: '2026-01-01'
         }
     ]
-    const ptCards: PtCard[] = [
+    const ptCards: Partial<PtCard>[] = [
         {
             CardID: 1,
             CardTitle: 'Bryce Harper',
@@ -135,7 +135,7 @@ test('Succeed bc only new cards are non-live', async () => {
             EffectiveDate: '2026-01-01'
         }
     ]
-    const ptCards: PtCard[] = [
+    const ptCards: Partial<PtCard>[] = [
         {
             CardID: 1,
             CardTitle: 'Bryce Harper',
@@ -188,7 +188,7 @@ test('Read and write batting and pitching stats', async () => {
             EffectiveDate: '2026-01-01'
         }
     ]
-    const ptCards: PtCard[] = [
+    const ptCards: Partial<PtCard>[] = [
         {
             CardID: 1,
             CardTitle: 'Bryce Harper',
@@ -206,7 +206,7 @@ test('Read and write batting and pitching stats', async () => {
             CardValue: 100
         }
     ]
-    const tournamentTypes: TournamentType[] = [
+    const tournamentTypes: Partial<TournamentType>[] = [
         {
             TournamentTypeID: 1
         }
@@ -253,7 +253,7 @@ test('Read and write batting and pitching stats for one team', async () => {
             EffectiveDate: '2026-01-01'
         }
     ]
-    const ptCards: PtCard[] = [
+    const ptCards: Partial<PtCard>[] = [
         {
             CardID: 1,
             CardTitle: 'Bryce Harper',
@@ -271,7 +271,7 @@ test('Read and write batting and pitching stats for one team', async () => {
             CardValue: 100
         }
     ]
-    const tournamentTypes: TournamentType[] = [
+    const tournamentTypes: Partial<TournamentType>[] = [
         {
             TournamentTypeID: 1
         }

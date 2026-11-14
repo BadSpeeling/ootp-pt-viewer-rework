@@ -5,7 +5,7 @@ import { ProjectJsonModelReader } from '../src/backend/database-creator';
 import { DatatableModel, OotpExportDataColumn } from '../src/backend/types';
 import { initializeDatabase } from './util';
 
-import { LiveUpdate, PtCard } from '../src/backend/database/databaseTypes';
+import { LiveUpdate, PtCard } from '../src/backend/database/DatabaseTypes';
 import { DataInserter } from '../src/backend/database/DataInserter';
 import { OotpDataExport } from '../src/backend/export-stats';
 
@@ -47,7 +47,7 @@ test('Load simple PT Roster test', async () => {
     const datatableModels = await datatableModelReader.getJsonModels();
     const ptRosterModel = await ptRosterModelReader.getJsonModels();
 
-    const ptCards: PtCard[] = [
+    const ptCards: Partial<PtCard>[] = [
         {
             CardID: 1,
             CardTitle: 'Bryce Harper',

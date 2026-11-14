@@ -3,11 +3,11 @@ import * as fs from 'node:fs'
 import * as path from 'node:path';
 
 import { ProjectJsonModelReader } from '../src/backend/database-creator'
-import { DatatableModel, OotpExportDataColumn, PitchingStats, StatsBatch, TournamentType } from '../src/backend/types';
+import { DatatableModel } from '../src/backend/types';
 import { initializeDatabase } from './util'
 import { DataInserter } from '../src/backend/database/DataInserter';
 import { TournamentRepository } from '../src/backend/database/repositories';
-
+import { PitchingStats, StatsBatch, TournamentType } from '../src/backend/database/DatabaseTypes';
 
 const databaseFilePath = ['E:','ootp_data','sqlite','test','tournament-tests']
 

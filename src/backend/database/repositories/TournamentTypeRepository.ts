@@ -1,6 +1,6 @@
 import { Database } from "../Database";
 import { Repository } from "./Repository";
-import { TournamentType } from '../../types'
+import { TournamentType } from '../DatabaseTypes'
 
 export class TournamentTypeRepository extends Repository {
 
