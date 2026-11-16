@@ -19,6 +19,30 @@ export class TournamentRepository extends Repository {
 
     }
 
+    public async deleteTournamentAsync (statsBatchID: number) {
+
+        const script = `
+BEGIN TRANSACTION;
+DELETE FROM BattingStats WHERE StatsBatchID = ${statsBatchID};
+DELETE FROM PitchingStats WHERE StatsBatchID = ${statsBatchID};
+DELETE FROM StatsBatch WHERE StatsBatchID = ${statsBatchID};
+		`
+
+		try {
+        	await this.database.openConnection();
+        	await this.database.execute(script);
+			await this.database.execute('COMMIT;');        	
+		}
+		catch (err) {
+			await this.database.execute('ROLLBACK;');
+			throw Error (`Failed deleting tournament stats for StatsBatch ${statsBatchID}: ${(err as Error).message}`);
+		}
+		finally {
+			await this.database.closeConnection();
+		}
+
+    }
+
     private getRecentTournamentResultsScript (query: GetRecentTournamentResultsQuery) {
 
         return `
