@@ -56,12 +56,8 @@ export function TournamentStats () {
         const currDate = new Date();
         currDate.setDate(currDate.getDate() - 7);
 
-        const recentTournamentResults = await window.electronAPI.getTournamentResults({
+        const recentTournamentResults = await window.electronAPI.getLatestTournamentResults({
             TeamName: "Lil Dicky",
-            Timeframe: {
-                StartDate: currDate.toISOString().slice(0, 10),
-                EndDate: '2099-12-31',
-            },
             TournamentTypeID: tournamentTypeID,
         });
         setRecentTournamentResults(recentTournamentResults);

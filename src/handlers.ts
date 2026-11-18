@@ -4,7 +4,7 @@ import { LiveUpdateRepository, PtRosterRepository, TournamentRepository, Tournam
 import { mapLiveUpdate, mapPtRoster, mapTournamentTypes } from './backend/mappers';
 import { LiveUpdate, TournamentType, PtCardRatings } from './userInterfaceTypes';
 import { OotpDataExport } from "./backend/export-stats";
-import { GetRecentTournamentResultsQuery } from "./backend/database/repositories/types";
+import { GetLastestTournamentResultsQuery } from "./backend/database/repositories/types";
 
 export async function getLiveUpdatesHandlerAsync (database: Database): Promise<LiveUpdate[]> {
 
@@ -41,10 +41,10 @@ export async function getPtRosterHandlerAsync (database: Database, exportedPtRos
 
 }
 
-export async function getRecentTournamentResultsHandlerAsync (database: Database, query: GetRecentTournamentResultsQuery) {
+export async function getRecentTournamentResultsHandlerAsync (database: Database, query: GetLastestTournamentResultsQuery) {
 
 	const repo = new TournamentRepository(database);
-    const tournamentResults = await repo.getRecentTournamentResultsAsync(query);
+    const tournamentResults = await repo.getLatestTournamentResultsAsync(query);
     return tournamentResults;
 
 }

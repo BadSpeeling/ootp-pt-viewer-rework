@@ -13,7 +13,7 @@ export function Landing ({ setCurrentPage }: LandingProps) {
 
         const getRecentTournamentResults = async () => {
 
-            const lastTournamentResults = await window.electronAPI.getTournamentResults({
+            const lastTournamentResults = await window.electronAPI.getLatestTournamentResults({
                 TeamName: "Lil Dicky",
                 TournamentCount: 10,
             });

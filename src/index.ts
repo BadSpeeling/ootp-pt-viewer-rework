@@ -5,7 +5,7 @@ import { OotpExportDataColumn, PtDataExportFile, ImportStatFileRequest } from '.
 import { PtDataExportState, ImportCardResult } from './backend/enums'
 
 import { Database } from './backend/database/Database';
-import { GetRecentTournamentResultsQuery } from './backend/database/repositories/types';
+import { GetLastestTournamentResultsQuery } from './backend/database/repositories/types';
 
 import { LiveUpdate, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult, PtCardRatings } from './userInterfaceTypes';
 
@@ -37,7 +37,7 @@ declare global {
         clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
         getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
         getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => Promise<TournamentPitchingStats[]>,
-        getTournamentResults: (query: GetRecentTournamentResultsQuery) => Promise<TournamentResult[]>,
+        getLatestTournamentResults: (query: GetLastestTournamentResultsQuery) => Promise<TournamentResult[]>,
         getPtRoster: () => Promise<PtCardRatings[]>
     }
 
@@ -105,7 +105,7 @@ ipcMain.handle('getTournamentTypes', getTournamentTypes);
 ipcMain.handle('clearPtDataFolder', clearPtDataFolder);
 ipcMain.handle('getTournamentBattingStats', getTournamentBattingStats);
 ipcMain.handle('getTournamentPitchingStats', getTournamentPitchingStats);
-ipcMain.handle('getTournamentResults', getTournamentResults);
+ipcMain.handle('getLatestTournamentResults', getLatestTournamentResults);
 ipcMain.handle('getPtRoster', getPtRoster);
 
 function get () {
@@ -255,7 +255,7 @@ async function getTournamentPitchingStats (e: IpcMainInvokeEvent, filter: Pitchi
 
 }
 
-async function getTournamentResults (e: IpcMainInvokeEvent, query: GetRecentTournamentResultsQuery) {
+async function getLatestTournamentResults (e: IpcMainInvokeEvent, query: GetLastestTournamentResultsQuery) {
 
     try {
 

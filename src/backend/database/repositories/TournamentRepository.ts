@@ -1,6 +1,6 @@
 import { Database } from "../Database";
 import { Repository } from "./Repository";
-import { GetRecentTournamentResultsQuery } from "./types";
+import { GetLastestTournamentResultsQuery } from "./types";
 import { TournamentResult } from '../../../userInterfaceTypes';
 
 export class TournamentRepository extends Repository {
@@ -9,9 +9,9 @@ export class TournamentRepository extends Repository {
         super(database);
     }
 
-    public async getRecentTournamentResultsAsync (query: GetRecentTournamentResultsQuery) {
+    public async getLatestTournamentResultsAsync (query: GetLastestTournamentResultsQuery) {
 
-        const script = this.getRecentTournamentResultsScript(query);
+        const script = this.getLatestTournamentResultsScript(query);
 		await this.database.openConnection();
         const tournamentResults = await this.database.getAllMapped<TournamentResult>(script);
 		await this.database.closeConnection();
@@ -43,7 +43,7 @@ DELETE FROM StatsBatch WHERE StatsBatchID = ${statsBatchID};
 
     }
 
-    private getRecentTournamentResultsScript (query: GetRecentTournamentResultsQuery) {
+    private getLatestTournamentResultsScript (query: GetLastestTournamentResultsQuery) {
 
         return `
 SELECT r.*, tt.Name TournamentName, sb.TournamentStartDate
@@ -53,7 +53,6 @@ FROM (
 		SELECT StatsBatchID, TournamentTypeID
 		FROM StatsBatch
 		WHERE 1=1
-		${query.Timeframe ? `AND unixepoch(TournamentStartDate) >= unixepoch('${query.Timeframe?.StartDate}')` : ""}
 		${query.TournamentTypeID ? `AND TournamentTypeID = ${query.TournamentTypeID}` : ""}		
 		ORDER BY UNIXEPOCH(TournamentStartDate) DESC, TournamentTypeID
 		${query.TournamentCount ? "LIMIT " + query.TournamentCount : ""}
