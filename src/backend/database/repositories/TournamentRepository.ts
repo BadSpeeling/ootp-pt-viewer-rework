@@ -1,7 +1,7 @@
 import { Database } from "../Database";
 import { Repository } from "./Repository";
 import { GetLastestTournamentResultsQuery } from "./types";
-import { TournamentRecord, TournamentBattingStats, TournamentPitchingStats } from '../../../userInterfaceTypes';
+import { TournamentRecord, TournamentBattingStats, TournamentPitchingStats, TournamentResult } from '../../../userInterfaceTypes';
 import { TournamentBattingStatsSum, TournamentPitchingStatsSum } from '../../types'
 
 export class TournamentRepository extends Repository {
@@ -44,7 +44,7 @@ DELETE FROM StatsBatch WHERE StatsBatchID = ${statsBatchID};
 
     }
 
-	public async getTournamentResultAsync (statsBatchID: number) {
+	public async getTournamentResultAsync (statsBatchID: number): Promise<TournamentResult>  {
 
 		try {
 			await this.database.openConnection();
@@ -56,10 +56,11 @@ DELETE FROM StatsBatch WHERE StatsBatchID = ${statsBatchID};
 			const tournamentBattingResult = this.addBattingRateStats(tournamentBattingTotals);
 			const tournamentPitchingResult = this.addPitchingRateStats(tournamentPitchingTotals);
 
+
 			return {
-				tournamentRecord,
-				tournamentBattingResult,
-				tournamentPitchingResult,
+				TournamentRecord: tournamentRecord,
+				TournamentBattingStats: tournamentBattingResult,
+				TournamentPitchingStats: tournamentPitchingResult,
 			}
 		}
 		finally {

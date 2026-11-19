@@ -35,6 +35,12 @@ export interface TournamentType {
     TournamentName: string,
 }
 
+export interface TournamentResult {
+    TournamentRecord: TournamentRecord,
+    TournamentBattingStats: TournamentBattingStats[],
+    TournamentPitchingStats: TournamentPitchingStats[],
+}
+
 export interface TournamentBattingStats {
     CardTitle: string,
     CardValue: number,
