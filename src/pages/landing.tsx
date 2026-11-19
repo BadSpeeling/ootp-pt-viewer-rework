@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CurrentPage, TournamentResult } from "../userInterfaceTypes"
+import { CurrentPage, TournamentRecord } from "../userInterfaceTypes"
 import { TournamentRecordResults } from './tournament-results/tournamentRecordResults';
 
 type LandingProps = {
@@ -25,7 +25,7 @@ export function Landing ({ setCurrentPage }: LandingProps) {
 
     }, []);
 
-    const [lastTournamentResults, setLastTournamentResults] = React.useState([] as TournamentResult[]);
+    const [lastTournamentResults, setLastTournamentResults] = React.useState([] as TournamentRecord[]);
 
     return (
         <div>

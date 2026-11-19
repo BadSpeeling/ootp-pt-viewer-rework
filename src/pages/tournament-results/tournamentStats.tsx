@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
 import { TournamentTypePicker } from "../tournamentTypePicker";
-import { TournamentBattingStats, TournamentPitchingStats, TournamentResult, TournamentType, Position, StatsType} from '../../userInterfaceTypes'
+import { TournamentBattingStats, TournamentPitchingStats, TournamentRecord, TournamentType, Position, StatsType} from '../../userInterfaceTypes'
 import { TournamentDatePicker } from "../tournamentDatePicker";
 import { TournamentRecordResults } from "./tournamentRecordResults";
 
@@ -22,7 +22,7 @@ export function TournamentStats () {
     const [positions, setPositions] = React.useState([] as string[])
     const [tournamentStartDate, setTournamentStartDate] = React.useState('1970-01-01');
     const [tournamentEndDate, setTournamentEndDate] = React.useState('2099-01-01');
-    const [recentTournamentResults, setRecentTournamentResults] = React.useState([] as TournamentResult[]);
+    const [recentTournamentResults, setRecentTournamentResults] = React.useState([] as TournamentRecord[]);
 
     const columns = getHeaders(statsTypeID);
 

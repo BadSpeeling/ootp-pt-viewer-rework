@@ -7,7 +7,7 @@ import { PtDataExportState, ImportCardResult } from './backend/enums'
 import { Database } from './backend/database/Database';
 import { GetLastestTournamentResultsQuery } from './backend/database/repositories/types';
 
-import { LiveUpdate, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentResult, PtCardRatings } from './userInterfaceTypes';
+import { LiveUpdate, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentRecord, PtCardRatings } from './userInterfaceTypes';
 
 import { OotpCsvExportReader } from './backend/export-reader';
 import { ProjectJsonModelReader } from './backend/database-creator';
@@ -37,7 +37,7 @@ declare global {
         clearPtDataFolder: (ptDataFolderPath: string[]) => Promise<void>,
         getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
         getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => Promise<TournamentPitchingStats[]>,
-        getLatestTournamentResults: (query: GetLastestTournamentResultsQuery) => Promise<TournamentResult[]>,
+        getLatestTournamentResults: (query: GetLastestTournamentResultsQuery) => Promise<TournamentRecord[]>,
         getPtRoster: () => Promise<PtCardRatings[]>
     }
 

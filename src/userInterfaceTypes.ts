@@ -60,7 +60,7 @@ export interface TournamentPitchingStats {
     ERA: number,
 }
 
-export interface TournamentResult {
+export interface TournamentRecord {
     W: number,
     L: number,
     StatsBatchID: number,

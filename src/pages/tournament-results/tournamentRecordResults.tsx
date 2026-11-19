@@ -1,7 +1,7 @@
-import { TournamentResult } from "../../userInterfaceTypes"
+import { TournamentRecord } from "../../userInterfaceTypes"
 
 type TournamentRecordResultsProps = {
-    tournamentResults: TournamentResult[],
+    tournamentResults: TournamentRecord[],
     showTournamentName: boolean,
 }
 
