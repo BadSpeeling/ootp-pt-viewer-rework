@@ -31,7 +31,7 @@ export class LocalSqlitePitchingStatsGetter implements IPitchingStatsGetter {
                 CardTitle: stats.CardTitle as string,
                 PtCardID: stats.PtCardID as number,
                 CardValue: stats.CardValue as number,
-                Throws: Throws[stats.Throws as number],
+                Throws: stats.Throws as number,
                 G: stats.G as number,
                 GS: stats.GS as number,
                 Outs: stats.Outs as number,

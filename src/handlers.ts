@@ -55,3 +55,10 @@ export async function deleteTournamentHandlerAsync (database: Database, statsBat
 	await repo.deleteTournamentAsync(statsBatchID);
 
 }
+
+export async function getTournamentResultAsync (database: Database, statsBatchID: number) {
+	
+	const repo = new TournamentRepository(database);
+	return await repo.getTournamentResultAsync(statsBatchID);
+
+}

@@ -3,7 +3,7 @@ import { Position, Bats, Throws, PtCardRosterStatus } from './backend/enums'
 export { PtCardRosterStatus, ImportCardResult, Position, Bats, Throws, StatsType, PtDataExportState } from './backend/enums'
 
 export enum CurrentPage {
-    LANDING,CARD_IMPORTER,STATS_IMPORTER,TOURNAMENT_STATS,PT_ROSTER
+    LANDING,CARD_IMPORTER,STATS_IMPORTER,TOURNAMENT_STATS,PT_ROSTER,TOURNAMENT_RESULT,
 }
 
 export interface LiveUpdate {
@@ -44,8 +44,8 @@ export interface TournamentResult {
 export interface TournamentBattingStats {
     CardTitle: string,
     CardValue: number,
-    Position: string,
-    Bats: string,
+    Position: Position,
+    Bats: Bats,
     PA: number,
     AVG: number,
     OBP: number,
@@ -56,7 +56,7 @@ export interface TournamentBattingStats {
 export interface TournamentPitchingStats {
     CardTitle: string,
     CardValue: number,
-    Throws: string,
+    Throws: Throws,
     G: number,
     GS: number,
     'K/9': number,

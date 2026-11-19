@@ -7,13 +7,13 @@ import { PtDataExportState, ImportCardResult } from './backend/enums'
 import { Database } from './backend/database/Database';
 import { GetLastestTournamentResultsQuery } from './backend/database/repositories/types';
 
-import { LiveUpdate, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentRecord, PtCardRatings } from './userInterfaceTypes';
+import { LiveUpdate, TournamentType, TournamentBattingStats, TournamentPitchingStats, TournamentRecord, PtCardRatings, TournamentResult } from './userInterfaceTypes';
 
 import { OotpCsvExportReader } from './backend/export-reader';
 import { ProjectJsonModelReader } from './backend/database-creator';
 import { BattingStatsFilter, IBattingStatsGetter, IPitchingStatsGetter, LocalSqliteBattingStatsGetter, LocalSqlitePitchingStatsGetter, PitchingStatsFilter } from './backend/stats-reading';
 
-import { createLiveUpdateHandlerAsync, getLiveUpdatesHandlerAsync, getPtRosterHandlerAsync, getRecentTournamentResultsHandlerAsync, getTournamentTypesHandlerAsync } from './handlers';
+import { createLiveUpdateHandlerAsync, getLiveUpdatesHandlerAsync, getPtRosterHandlerAsync, getRecentTournamentResultsHandlerAsync, getTournamentResultAsync, getTournamentTypesHandlerAsync } from './handlers';
 
 import { PtCardImporter } from './backend/PtCardImporter';
 import { PtFolderSearcher } from './backend/PtFolderSearcher';
@@ -38,7 +38,8 @@ declare global {
         getTournamentBattingStats: (battingStatsFilter: BattingStatsFilter) => Promise<TournamentBattingStats[]>,
         getTournamentPitchingStats: (pitchingStatsFilter: PitchingStatsFilter) => Promise<TournamentPitchingStats[]>,
         getLatestTournamentResults: (query: GetLastestTournamentResultsQuery) => Promise<TournamentRecord[]>,
-        getPtRoster: () => Promise<PtCardRatings[]>
+        getPtRoster: () => Promise<PtCardRatings[]>,
+        getTournamentResult: (statsBatchID: number) => Promise<TournamentResult | null>,
     }
 
 }
@@ -107,6 +108,7 @@ ipcMain.handle('getTournamentBattingStats', getTournamentBattingStats);
 ipcMain.handle('getTournamentPitchingStats', getTournamentPitchingStats);
 ipcMain.handle('getLatestTournamentResults', getLatestTournamentResults);
 ipcMain.handle('getPtRoster', getPtRoster);
+ipcMain.handle('getTournamentResult', getTournamentResult);
 
 function get () {
     return "Hello!";
@@ -267,6 +269,22 @@ async function getLatestTournamentResults (e: IpcMainInvokeEvent, query: GetLast
     catch (err) {
         //TODO: log
         return [];
+    }
+
+}
+
+async function getTournamentResult (e: IpcMainInvokeEvent, statsBatchID: number) {
+
+    try {
+
+        const db = getDatabase();
+        const tournament = await getTournamentResultAsync(db, statsBatchID);
+        return tournament;
+
+    }
+    catch (err) {
+        //TODO: log
+        return null;
     }
 
 }

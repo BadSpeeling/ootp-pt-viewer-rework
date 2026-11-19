@@ -1,4 +1,4 @@
-import { PtDataExportState } from './enums'
+import { Bats, Position, PtDataExportState, Throws } from './enums'
 
 export interface DatabaseRecord {
     [index:string]: string|number,
@@ -45,14 +45,14 @@ export interface TournamentBattingStatsSum {
     PtCardID: number,
     CardTitle: string,
     CardValue: number,
-    Position: string,
-    Bats: string,
+    Position: Position,
+    Bats: Bats,
     H: number,
     AB: number,
     BB: number,
     IBB: number,
     HP: number,
-    SF: number,
+    SF: number, 
     PA: number,
     TB: number,
 }
@@ -61,7 +61,7 @@ export interface TournamentPitchingStatsSum {
     PtCardID: number,
     CardTitle: string,
     CardValue: number,
-    Throws: string,
+    Throws: Throws,
     G: number,
     GS: number,
     K: number,

@@ -5,9 +5,8 @@ import { toast } from 'react-toastify';
 import DataTable from 'react-data-table-component';
 import { TableColumn } from 'react-data-table-component';
 import { TournamentTypePicker } from "../tournamentTypePicker";
-import { TournamentBattingStats, TournamentPitchingStats, TournamentRecord, TournamentType, Position, StatsType} from '../../userInterfaceTypes'
+import { TournamentBattingStats, TournamentPitchingStats, TournamentRecord, TournamentType, Position, StatsType, Bats, Throws} from '../../userInterfaceTypes'
 import { TournamentDatePicker } from "../tournamentDatePicker";
-import { TournamentRecordResults } from "./tournamentRecordResults";
 
 export function TournamentStats () {
 
@@ -90,7 +89,7 @@ export function TournamentStats () {
         <>
             <div>
                 <div className="mb-2"><TournamentTypePicker selectedTournamentType={selectedTournamentType} setSelectedTournamentType={setSelectedTournamentType} tournaments={tournamentTypes}/></div>
-                <TournamentRecordResults showTournamentName={false} tournamentResults={recentTournamentResults} />
+                {/* <TournamentRecordResults showTournamentName={false} tournamentResults={recentTournamentResults} /> */}
             </div>
             <div>
                 <div className="m-4">
@@ -174,8 +173,8 @@ function getHeaders (statsType: StatsType) {
         const columns: TableColumn<TournamentBattingStats>[] = [
             { name: 'Card Title', selector: r => r.CardTitle, width: '300px', minWidth: '120px' },
             { name: 'CardValue', selector: r => r.CardValue, },
-            { name: 'Position', selector: r => r.Position, },
-            { name: 'Bats', selector: r => r.Bats, },
+            { name: 'Position', selector: r => Position[r.Position], },
+            { name: 'Bats', selector: r => Bats[r.Bats], },
             { name: 'PA', selector: r => r.PA, sortable: true },
             { name: 'AVG', selector: r => r.AVG, },
             { name: 'OBP', selector: r => r.OBP, },
@@ -188,7 +187,7 @@ function getHeaders (statsType: StatsType) {
         const columns: TableColumn<TournamentPitchingStats>[] = [
             { name: 'Card Title', selector: r => r.CardTitle, width: '300px', minWidth: '120px' },
             { name: 'Card Value', selector: r => r.CardValue, },
-            { name: 'Throws', selector: r => r.Throws, },
+            { name: 'Throws', selector: r => Throws[r.Throws], },
             { name: 'G', selector: r => r.G, sortable: true },
             { name: 'GS', selector: r => r.GS, sortable: true },
             { name: 'K/9', selector: r => r["K/9"], },

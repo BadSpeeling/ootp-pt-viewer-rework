@@ -1,13 +1,14 @@
 import React from 'react';
 
-import { CurrentPage, TournamentRecord } from "../userInterfaceTypes"
+import { CurrentPage, TournamentRecord, TournamentResult } from "../userInterfaceTypes"
 import { TournamentRecordResults } from './tournament-results/tournamentRecordResults';
 
 type LandingProps = {
     setCurrentPage: React.Dispatch<React.SetStateAction<CurrentPage>>,
+    setTournamentResult: React.Dispatch<React.SetStateAction<TournamentResult | null>>,
 }
 
-export function Landing ({ setCurrentPage }: LandingProps) {
+export function Landing ({ setCurrentPage, setTournamentResult }: LandingProps) {
 
     React.useEffect(() => {
 
@@ -39,7 +40,7 @@ export function Landing ({ setCurrentPage }: LandingProps) {
                 <div className="text-center flex-1 mr-4"><button className="w-full mx-8 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => setCurrentPage(CurrentPage.CARD_IMPORTER)}>Card Importer</button></div>
                 <div className="text-center flex-1 mr-4"><button className="w-full mx-8 cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full" onClick={() => setCurrentPage(CurrentPage.PT_ROSTER)}>PT Roster</button></div>
             </div>
-            <TournamentRecordResults showTournamentName={true} tournamentResults={lastTournamentResults} />
+            <TournamentRecordResults showTournamentName={true} tournamentResults={lastTournamentResults} setTournamentResult={setTournamentResult} />
         </div>
     )
 }
