@@ -6,6 +6,7 @@ import { Landing, CardImporter, StatsImporter, TournamentStats, PtRoster } from 
 
 import { ToastContainer } from 'react-toastify';
 import { TournamentResult as TournamentResultUI } from './pages/tournament-results/tournamentResult';
+import { NavigationMenu } from './pages/navigationMenu';
 
 function App () {
 
@@ -21,7 +22,8 @@ function App () {
     return (
         <div>
             <ToastContainer />
-            {currentPage === CurrentPage.LANDING && <div><Landing setTournamentResult={setTournamentResult} setCurrentPage={setCurrentPage} /></div>}
+            <NavigationMenu setCurrentPage={setCurrentPage} />
+            {currentPage === CurrentPage.LANDING && <div><Landing setTournamentResult={setTournamentResult} /></div>}
             {currentPage === CurrentPage.CARD_IMPORTER && <div><CardImporter /></div>}
             {currentPage === CurrentPage.STATS_IMPORTER && <div><StatsImporter /></div>}
             {currentPage === CurrentPage.TOURNAMENT_STATS && <div><TournamentStats /></div>}
